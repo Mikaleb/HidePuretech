@@ -1,11 +1,18 @@
 {
   "manifest_version": 3,
   "name": "Create a Chrome Extension with TypeScript",
+  "description": "Hides div elements containing a specific word.",
   "version": "1.0.0",
   "action": {},
   "background": {
     "service_worker": "src/background/index.js",
     "type": "module"
   },
-  "permissions": ["scripting", "activeTab"]
+  "permissions": ["scripting", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"]
+    }
+  ]
 }
