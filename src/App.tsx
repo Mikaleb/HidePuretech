@@ -3,7 +3,9 @@ declare const chrome: any;
 
 import { Component } from "react";
 import "./App.css";
-import { Box, Flex, Heading, Separator } from "@radix-ui/themes";
+import { Box, Flex, Heading, Separator, Text, Switch } from "@radix-ui/themes";
+import * as Label from "@radix-ui/react-label";
+
 import { AppState } from "./types/state";
 
 class App extends Component<{}, AppState> {
@@ -23,14 +25,18 @@ class App extends Component<{}, AppState> {
     };
 
     this.getStateFromKey("isOn");
-    // this.getStateFromKey("newMotor");
-    // this.getStateFromKey("motors");
-    // this.getStateFromKey("websites");
+    this.getStateFromKey("newMotor");
+    this.getStateFromKey("motors");
+    this.getStateFromKey("websites");
   }
 
   sendMessageToContentScript = async () => {
-    // get all tabs and send message to all tabs
-    const tabs = await chrome.tabs.query({});
+    // send it to each tabs that match the content_scripts
+
+    const tabs = await chrome.tabs.query({
+      url: this.state.websites.map((website) => website.url),
+    });
+
     tabs.forEach((tab: any) => {
       chrome.tabs.sendMessage(tab.id, this.state, (response: any) => {
         console.log("Response from content script:", response);
@@ -108,7 +114,46 @@ class App extends Component<{}, AppState> {
           </button>
         </Flex>
         <Separator decorative style={{ margin: "1em 0em" }} />
-        AAAAA
+
+        <Text>Active on:</Text>
+
+        <Flex
+          as="span"
+          gap="2"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {this.state.websites.map((site, index) => (
+            <Flex key={index}>
+              <Label.Root className="LabelRoot" htmlFor="firstName">
+                {site.title}
+              </Label.Root>
+              <Switch
+                className="SwitchRoot"
+                id="airplane-mode"
+                value={site.active ? "on" : "off"}
+                checked={site.active}
+                onClick={() => {
+                  const newWebsites = this.state.websites.map((website, i) => {
+                    if (i === index) {
+                      return {
+                        ...website,
+                        active: !website.active,
+                      };
+                    }
+                    return website;
+                  });
+                  this.setState({ websites: newWebsites });
+                  chrome.storage.sync.set({ websites: newWebsites });
+                  this.sendMessageToContentScript();
+                }}
+              ></Switch>
+            </Flex>
+          ))}
+        </Flex>
       </Box>
     );
   }
