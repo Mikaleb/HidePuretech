@@ -3,10 +3,19 @@ declare const chrome: any;
 
 import { Component } from "react";
 import "./App.css";
-import { Box, Flex, Heading, Separator, Text, Switch } from "@radix-ui/themes";
-import * as Label from "@radix-ui/react-label";
+
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 import { AppState } from "./types/state";
+import FooterApp from "./FooterApp";
 
 class App extends Component<{}, AppState> {
   constructor(props: {}) {
@@ -73,88 +82,91 @@ class App extends Component<{}, AppState> {
 
   render() {
     return (
-      <Box
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "1rem",
-          minWidth: "10em",
-        }}
-      >
-        <Heading>Settings</Heading>
-        <Flex as="span" gap="2">
-          <button
-            onClick={this.toggleActivated}
-            style={{
-              boxShadow: this.state.isOn
-                ? "inset 20px 20px 60px #bebebe,inset -20px -20px 60px #ffffff"
-                : "20px 20px 60px #bebebe,-20px -20px 60px #ffffff",
-            }}
-            className="skeue--button"
-          >
-            <div
-              className={`skeue--button__light ${
-                this.state.isOn
-                  ? "skeue--button__light--on"
-                  : "skeue--button__light--off"
-              }`}
-            ></div>
-
-            <p
-              style={{
-                textTransform: "uppercase",
-              }}
-            >
-              {this.state.isOn
-                ? chrome.i18n.getMessage("isOn")
-                : chrome.i18n.getMessage("isOff")}
-            </p>
-          </button>
-        </Flex>
-        <Separator decorative style={{ margin: "1em 0em" }} />
-
-        <Text>Active on:</Text>
-
-        <Flex
-          as="span"
-          gap="2"
+      <div>
+        <Box
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            padding: "1rem",
           }}
         >
-          {this.state.websites.map((site, index) => (
-            <Flex key={index}>
-              <Label.Root className="LabelRoot" htmlFor="firstName">
-                {site.title}
-              </Label.Root>
-              <Switch
-                className="SwitchRoot"
-                id="airplane-mode"
-                value={site.active ? "on" : "off"}
-                checked={site.active}
-                onClick={() => {
-                  const newWebsites = this.state.websites.map((website, i) => {
-                    if (i === index) {
-                      return {
-                        ...website,
-                        active: !website.active,
-                      };
-                    }
-                    return website;
-                  });
-                  this.setState({ websites: newWebsites });
-                  chrome.storage.sync.set({ websites: newWebsites });
-                  this.sendMessageToContentScript();
+          <Typography variant="h3" align="center">
+            {chrome.i18n.getMessage("settings")}
+          </Typography>
+
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <button
+              onClick={this.toggleActivated}
+              style={{
+                boxShadow: this.state.isOn
+                  ? "inset 20px 20px 60px #bebebe,inset -20px -20px 60px #ffffff"
+                  : "20px 20px 60px #bebebe,-20px -20px 60px #ffffff",
+              }}
+              className="skeue--button"
+            >
+              <div
+                className={`skeue--button__light ${
+                  this.state.isOn
+                    ? "skeue--button__light--on"
+                    : "skeue--button__light--off"
+                }`}
+              ></div>
+
+              <p
+                style={{
+                  textTransform: "uppercase",
                 }}
-              ></Switch>
-            </Flex>
-          ))}
-        </Flex>
-      </Box>
+              >
+                {this.state.isOn
+                  ? chrome.i18n.getMessage("isOn")
+                  : chrome.i18n.getMessage("isOff")}
+              </p>
+            </button>
+          </Box>
+          <Divider style={{ margin: "1em 0em" }} />
+
+          <Container
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {this.state.websites.map((site, index) => (
+              <Container key={index}>
+                <FormGroup>
+                  <FormControlLabel
+                    label={site.title}
+                    control={
+                      <Switch
+                        id="airplane-mode"
+                        value={site.active ? "on" : "off"}
+                        checked={site.active}
+                        onClick={() => {
+                          const newWebsites = this.state.websites.map(
+                            (website, i) => {
+                              if (i === index) {
+                                return {
+                                  ...website,
+                                  active: !website.active,
+                                };
+                              }
+                              return website;
+                            }
+                          );
+                          this.setState({ websites: newWebsites });
+                          chrome.storage.sync.set({ websites: newWebsites });
+                          this.sendMessageToContentScript();
+                        }}
+                      ></Switch>
+                    }
+                  />
+                </FormGroup>
+              </Container>
+            ))}
+          </Container>
+        </Box>
+
+        <FooterApp />
+      </div>
     );
   }
 }

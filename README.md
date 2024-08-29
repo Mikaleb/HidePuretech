@@ -26,7 +26,7 @@ To debug the extension, open the Chrome extensions page by navigating to `chrome
 
 ### Roadmap
 
-- [ ] Add support for more engines
 - [ ] Add support for more websites
 - [ ] Add support for more languages
+- [ ] Add support for more engines
 - [ ] Add support for more browsers

@@ -1,5 +1,6 @@
 {
   "add": { "message": "Add a motor to hide" },
   "isOn": { "message": "On" },
-  "isOff": { "message": "Off" }
+  "isOff": { "message": "Off" },
+  "settings": { "message": "Settings" }
 }
