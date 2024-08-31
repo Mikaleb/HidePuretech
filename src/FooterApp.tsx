@@ -1,33 +1,63 @@
-import * as React from "react";
+// import * as React from "react";
 import Box from "@mui/material/Box";
-// import BottomNavigation from "@mui/material/BottomNavigation";
-// import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-// import RestoreIcon from "@mui/icons-material/Restore";
-// import FavoriteIcon from "@mui/icons-material/Favorite";
-// import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
+
+import GitHubIcon from "@mui/icons-material/GitHub";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 export default function SimpleBottomNavigation() {
-  const [value, setValue] = React.useState(0);
+  // const [value, setValue] = React.useState(0);
 
   return (
     <Box
       style={{
         backgroundColor: "#f5f5f5",
-        padding: "0.5em",
+        fontSize: "0.8em",
+        padding: "0.5em 1em",
+        alignContent: "center",
       }}
     >
-      Made with ❤️ by <a href="https://agencevolcan.fr">Agence Volcan</a>
-      {/* <BottomNavigation
-        showLabels
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 3, sm: 1 }}
+        sx={{ alignItems: "center" }}
       >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
-      </BottomNavigation> */}
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{ alignItems: "center", flexGrow: 1 }}
+        >
+          <Button
+            size="small"
+            href="https://github.com/sponsors/Mikaleb"
+            target="_blank"
+            rel="noopener"
+          >
+            <FavoriteBorderIcon
+              fontSize="small"
+              // sx={{ color: iconColor }}
+              style={{ marginRight: "0.3em" }}
+            />
+            Support
+          </Button>
+
+          <Typography sx={{ color: "grey.500", fontSize: 13, opacity: "70%" }}>
+            &bull;
+          </Typography>
+
+          <IconButton
+            target="_blank"
+            rel="noopener"
+            href="https://github.com/Mikaleb?tab=repositories"
+            aria-label="github"
+            title="GitHub"
+            size="small"
+          >
+            <GitHubIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Stack>
     </Box>
   );
 }

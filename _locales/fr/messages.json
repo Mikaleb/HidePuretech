@@ -2,5 +2,6 @@
   "add": { "message": "Ajouter un moteur a masquer" },
   "isOn": { "message": "Activé" },
   "isOff": { "message": "Désactivé" },
-  "settings": { "message": "Paramètres" }
+  "settings": { "message": "Paramètres" },
+  "support": { "message": "Soutenir" }
 }

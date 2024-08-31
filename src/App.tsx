@@ -2,7 +2,7 @@
 declare const chrome: any;
 
 import { Component } from "react";
-import "./App.css";
+import "./App.scss";
 
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -74,7 +74,7 @@ class App extends Component<{}, AppState> {
     chrome.storage.sync.get(value, (results: { [x: string]: any }) => {
       if (results && this.state) {
         this.setState({
-          ...results,
+          ...(results as AppState),
         });
       }
     });
@@ -88,19 +88,28 @@ class App extends Component<{}, AppState> {
             padding: "1rem",
           }}
         >
-          <Typography variant="h3" align="center">
+          <Typography
+            variant="h4"
+            align="center"
+            style={{
+              padding: "0em 1em",
+            }}
+            className="title"
+          >
             {chrome.i18n.getMessage("settings")}
           </Typography>
 
-          <Box display="flex" justifyContent="center" alignItems="center">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            margin={"1.3em 0em"}
+          >
             <button
               onClick={this.toggleActivated}
-              style={{
-                boxShadow: this.state.isOn
-                  ? "inset 20px 20px 60px #bebebe,inset -20px -20px 60px #ffffff"
-                  : "20px 20px 60px #bebebe,-20px -20px 60px #ffffff",
-              }}
-              className="skeue--button"
+              className={`skeue--button skeue--button${
+                this.state.isOn ? "__isOn" : "__isOff"
+              }`}
             >
               <div
                 className={`skeue--button__light ${

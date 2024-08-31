@@ -12,37 +12,48 @@ const getCurrentUrlSetting = (websites: any) => {
     .join("|");
 
   const regex = new RegExp(pattern);
-  const website = websites.find((website: { url: string }) => regex.test(url));
+  const website = websites.find((_website: { url: string }) => regex.test(url));
 
   return website;
 };
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // Handle the message
-  console.debug("🚀 ~ message", message);
+chrome.runtime.onMessage.addListener(
+  (
+    message: { websites: any[]; isOn: boolean },
+    sender: any,
+    sendResponse: (arg0: {
+      status: string;
+      message: any;
+      sender: any;
+      sendResponse: any;
+    }) => void
+  ) => {
+    // Handle the message
+    console.debug("🚀 ~ message", message);
 
-  const isCurrentUrlActive = getCurrentUrlSetting(message.websites).active;
+    const isCurrentUrlActive = getCurrentUrlSetting(message.websites).active;
 
-  if (message.isOn === true && isCurrentUrlActive) {
-    hideElements();
-  } else if (message.isOn === false || !isCurrentUrlActive) {
-    showElements();
-  }
-
-  // if any website is not active, check that it's within the current url
-  if (message.websites) {
-    const website = message.websites.find(
-      (website: { url: string; active: boolean }) => url.includes(website.url)
-    );
-    if (!website.active) {
-      showElements();
-    } else {
+    if (message.isOn === true && isCurrentUrlActive) {
       hideElements();
+    } else if (message.isOn === false || !isCurrentUrlActive) {
+      showElements();
     }
-  }
 
-  sendResponse({ status: "received", message, sender, sendResponse });
-});
+    // if any website is not active, check that it's within the current url
+    if (message.websites) {
+      const website = message.websites.find(
+        (website: { url: string; active: boolean }) => url.includes(website.url)
+      );
+      if (!website.active) {
+        showElements();
+      } else {
+        hideElements();
+      }
+    }
+
+    sendResponse({ status: "received", message, sender, sendResponse });
+  }
+);
 
 const hideElements = () => {
   // skip if location.href contain a website url that is not active in the state
@@ -59,10 +70,13 @@ const hideElements = () => {
     const childsDiv = element.querySelectorAll("div");
 
     childsDiv.forEach((child) => {
-      if (child.textContent.includes("PURETECH")) {
+      if (child.textContent && child.textContent.includes("PURETECH")) {
         element.style.display = "none";
         // fix for lacentrale : if parent div with class "searchCard", hide too
-        if (element.parentElement.className === "searchCard") {
+        if (
+          element.parentElement &&
+          element.parentElement.className === "searchCard"
+        ) {
           element.parentElement.style.display = "none";
         }
       }
@@ -75,10 +89,13 @@ const showElements = () => {
 
   elements.forEach((element) => {
     // element.style.display = "block";
-    if (element.textContent.includes("PURETECH")) {
+    if (element.textContent && element.textContent.includes("PURETECH")) {
       element.style.display = "flex";
       // fix for lacentrale : if parent div with class "searchCard", hide too
-      if (element.parentElement.className === "searchCard") {
+      if (
+        element.parentElement &&
+        element.parentElement.className === "searchCard"
+      ) {
         element.parentElement.style.display = "flex";
       }
     }

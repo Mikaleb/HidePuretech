@@ -1,0 +1,72 @@
+@import url("./assets/palette.css");
+
+@font-face {
+  font-family: "Neogrey";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Neogrey"),
+    url("./fonts/Neogrey/NeogreyRegular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Neogrey Medium";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Neogrey Medium"),
+    url("./fonts/Neogrey/NeogreyMedium.woff") format("woff");
+}
+
+.title {
+  font-family: "Neogrey", sans-serif !important;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+body {
+  margin: 0;
+}
+
+button.skeue--button {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 0 2em;
+  background-color: linear-gradient(145deg, #cacaca, #f0f0f0);
+  color: black;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+  box-shadow: inset 20px 20px 60px #bebebe, inset -20px -20px 60px #ffffff;
+
+  &__isOff {
+    box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+  }
+
+  &__isOn {
+    // box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+  }
+
+  &:hover {
+    // box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+  }
+}
+
+.skeue--button__light {
+  width: 35px;
+  height: 6px;
+  margin: 0 auto;
+  background-color: #212121;
+  margin-top: 1em;
+  border-radius: 7px;
+  border: 1px solid #1b1b1b;
+  transition: all 0.6s;
+}
+.skeue--button__light--on {
+  background-color: #f9ea1a;
+  border: 1px solid #923c14;
+  box-shadow: 0 0 11px 3px #c94a29 inset, 0 0 18px 4px #c77713, 0 0 100px #fff;
+  transition: all 0.6s;
+}
