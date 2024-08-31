@@ -6,15 +6,24 @@
   "permissions": ["storage", "tabs", "activeTab"],
   "default_locale": "en",
   "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "public/icon16.png",
+    "32": "public/icon32.png",
+    "48": "public/icon48.png",
+    "128": "public/icon128.png"
+  },
+  "background": {
+    "scripts": ["browser-polyfill.min.js"]
   },
   "content_scripts": [
     {
-      "js": ["src/content.tsx"],
+      "js": ["browser-polyfill.min.js", "src/content.tsx"],
       "matches": ["https://*.lacentrale.fr/listing?*"]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "hide-puretech@mikaleb.com",
+      "strict_min_version": "109.0"
+    }
+  }
 }

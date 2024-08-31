@@ -60,10 +60,6 @@ const hideElements = () => {
 
   const elements = document.querySelectorAll("a");
 
-  // chrome.storage.sync.get("isOn", (results: { isOn: any }) => {
-  //   console.debug("🚀 ~ results.isOn", results.isOn);
-  // });
-
   elements.forEach((element) => {
     // if in the a, there is a div with any child that has PURETECH in it, hide the a
 
@@ -88,7 +84,6 @@ const showElements = () => {
   const elements = document.querySelectorAll("a");
 
   elements.forEach((element) => {
-    // element.style.display = "block";
     if (element.textContent && element.textContent.includes("PURETECH")) {
       element.style.display = "flex";
       // fix for lacentrale : if parent div with class "searchCard", hide too

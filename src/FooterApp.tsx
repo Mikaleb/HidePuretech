@@ -1,4 +1,3 @@
-// import * as React from "react";
 import Box from "@mui/material/Box";
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 
@@ -6,8 +5,6 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 export default function SimpleBottomNavigation() {
-  // const [value, setValue] = React.useState(0);
-
   return (
     <Box
       style={{
