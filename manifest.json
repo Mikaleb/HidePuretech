@@ -3,7 +3,7 @@
   "name": "Hide Puretech",
   "version": "1.0.0",
   "action": { "default_popup": "index.html" },
-  "permissions": ["storage", "tabs", "activeTab"],
+  "permissions": ["storage", "tabs"],
   "default_locale": "en",
   "icons": {
     "16": "icon16.png",
