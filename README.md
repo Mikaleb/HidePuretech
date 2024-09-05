@@ -2,7 +2,12 @@
 
 ## Features
 
-This Chrome extension hides the PureTech listings on the [LaCentrale](https://www.lacentrale.fr/) website.
+This Chrome extension hides the PureTech listings on supported websites.
+
+### Supported websites
+
+- [LaCentrale](https://www.lacentrale.fr/)
+- [AramisAuto](https://www.aramisauto.com/)
 
 ### Settings
 
