@@ -3,8 +3,13 @@
   "name": "Hide Puretech",
   "description": "Hide Puretech motors from car listing",
   "version": "1.1.2",
-  "action": { "default_popup": "index.html" },
-  "permissions": ["storage", "tabs"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
   "default_locale": "en",
   "icons": {
     "16": "icon16.png",
@@ -14,11 +19,16 @@
   },
   "content_scripts": [
     {
-      "js": ["src/content.tsx"],
+      "js": [
+        "src/content.tsx"
+      ],
       "matches": [
         "https://*.lacentrale.fr/listing?*",
         "https://*.aramisauto.com/*"
       ]
     }
-  ]
+  ],
+  "current": {
+    "version": "1.1.2"
+  }
 }
