@@ -33,18 +33,14 @@ chrome.runtime.onMessage.addListener(
       sendResponse: any;
     }) => void
   ) => {
-    console.debug("🚀 ~ message:", message);
-    debugger;
-
-    if (!message.isOn && message.isOn !== undefined) {
-      showElements();
-      sendResponse({ status: "received", message, sender, sendResponse });
+    if (message.isOn) {
+      hideElementsIfSettingIsActivated();
       return;
+    } else {
+      showElements();
     }
 
-    if (!message.websites) {
-      sendResponse({ status: "received", message, sender, sendResponse });
-    } else {
+    if (message.websites) {
       const isCurrentUrlActive = findUrlSettings(message.websites, url).active;
 
       if (isCurrentUrlActive) {
@@ -97,6 +93,18 @@ const showElements = () => {
   manipulateElements(false);
 };
 
+const hideElementsIfSettingIsActivated = () => {
+  chrome.storage.sync.get(["websites"], (results: { websites: any }) => {
+    const matchedWebsite = findUrlSettings(results.websites, url);
+
+    if (matchedWebsite.active) {
+      hideElements();
+    } else {
+      showElements();
+    }
+  });
+};
+
 // main function
 
 const main = () => {
@@ -107,6 +115,7 @@ const main = () => {
       if (!isOn) {
         // set default value
         chrome.storage.sync.set({ isOn: initialState.isOn });
+        hideElementsIfSettingIsActivated();
       }
 
       if (!websites) {

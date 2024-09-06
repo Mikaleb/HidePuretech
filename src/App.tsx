@@ -80,18 +80,10 @@ class App extends Component<{}, AppState> {
 
   handleToggleActivated = () => {
     chrome.storage.sync.get("isOn", (results: { isOn: any }) => {
-      if (results.isOn) {
-        chrome.storage.sync.set({ isOn: false });
-        this.setState({
-          isOn: false,
-        });
-      } else {
-        chrome.storage.sync.set({ isOn: true });
-        this.setState({
-          isOn: true,
-        });
-      }
-      this.sendMessageToContentScript({ isOn: this.state.isOn });
+      const newIsOn = !results.isOn;
+      chrome.storage.sync.set({ isOn: newIsOn });
+      this.setState({ isOn: newIsOn });
+      this.sendMessageToContentScript({ isOn: newIsOn });
     });
   };
 
