@@ -16,30 +16,21 @@ import Switch from "@mui/material/Switch";
 
 import { AppState } from "./types/state";
 import FooterApp from "./FooterApp";
+import { initialState } from "./store/initialState";
 
 class App extends Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
 
-    this.state = {
-      isOn: false,
-      motors: [],
-      websites: [
-        {
-          title: "lacentrale.fr",
-          url: "https://*.lacentrale.fr/listing?*",
-          active: true,
-        },
-      ],
-    };
+    this.state = initialState;
 
+    this.getStateFromKey("websites");
     this.getStateFromKey("isOn");
     this.getStateFromKey("newMotor");
     this.getStateFromKey("motors");
-    this.getStateFromKey("websites");
   }
 
-  sendMessageToContentScript = async () => {
+  sendMessageToContentScript = async (newState: Partial<AppState>) => {
     // send it to each tabs that match the content_scripts
 
     const tabs = await chrome.tabs.query({
@@ -47,27 +38,34 @@ class App extends Component<{}, AppState> {
     });
 
     tabs.forEach((tab: any) => {
-      chrome.tabs.sendMessage(tab.id, this.state, (response: any) => {
-        console.log("Response from content script:", response);
-      });
+      chrome.tabs
+        .sendMessage(tab.id, newState)
+        .then((response: { title: any; url: any }) => {
+          console.info(
+            "Popup received response from tab with title '%s' and url %s",
+            response.title,
+            response.url
+          );
+        })
+        .catch((error: any) => {
+          console.warn("Popup could not send message to tab %d", tab.id, error);
+        });
     });
   };
 
-  toggleActivated = () => {
-    chrome.storage.sync.get("isOn", (results: { isOn: any }) => {
-      if (results.isOn) {
-        chrome.storage.sync.set({ isOn: false });
-        this.setState({
-          isOn: false,
-        });
-      } else {
-        chrome.storage.sync.set({ isOn: true });
-        this.setState({
-          isOn: true,
-        });
+  switchWebsiteActive = (site: AppState["websites"][0]) => {
+    const websites = this.state.websites.map((website) => {
+      if (website.title === site.title) {
+        website.active = !website.active;
       }
-      this.sendMessageToContentScript();
+      return website;
     });
+    this.setState({
+      websites,
+    });
+
+    chrome.storage.sync.set({ websites });
+    this.sendMessageToContentScript({ websites: [site] });
   };
 
   getStateFromKey = (value: string | number) => {
@@ -77,6 +75,15 @@ class App extends Component<{}, AppState> {
           ...(results as AppState),
         });
       }
+    });
+  };
+
+  handleToggleActivated = () => {
+    chrome.storage.sync.get("isOn", (results: { isOn: any }) => {
+      const newIsOn = !results.isOn;
+      chrome.storage.sync.set({ isOn: newIsOn });
+      this.setState({ isOn: newIsOn });
+      this.sendMessageToContentScript({ isOn: newIsOn });
     });
   };
 
@@ -106,7 +113,7 @@ class App extends Component<{}, AppState> {
             margin={"1.3em 0em"}
           >
             <button
-              onClick={this.toggleActivated}
+              onClick={this.handleToggleActivated}
               className={`skeue--button skeue--button${
                 this.state.isOn ? "__isOn" : "__isOff"
               }`}
@@ -149,22 +156,7 @@ class App extends Component<{}, AppState> {
                         id="airplane-mode"
                         value={site.active ? "on" : "off"}
                         checked={site.active}
-                        onClick={() => {
-                          const newWebsites = this.state.websites.map(
-                            (website, i) => {
-                              if (i === index) {
-                                return {
-                                  ...website,
-                                  active: !website.active,
-                                };
-                              }
-                              return website;
-                            }
-                          );
-                          this.setState({ websites: newWebsites });
-                          chrome.storage.sync.set({ websites: newWebsites });
-                          this.sendMessageToContentScript();
-                        }}
+                        onClick={() => this.switchWebsiteActive(site)}
                       ></Switch>
                     }
                   />
