@@ -1,13 +1,22 @@
 import { initialState } from "./store/initialState";
 import { AppState } from "./types/state";
+import { toggleAd } from "./utils/motorHiddingMethods";
 
-declare const chrome: any;
-
-// I want to hide all the elements on the page that have the word "PURETECH" in them
+declare const browser: any;
 
 const url = location.href;
 
-const findUrlSettings = (websites: any, url: string) => {
+/**
+ * Finds the settings for a given URL from a list of websites.
+ *
+ * @param websites - An array of website objects, each containing a `url` property.
+ * @param url - The URL to find settings for.
+ * @returns The website object that matches the given URL, or `undefined` if no match is found.
+ *
+ * The function converts wildcard patterns in the website URLs to regular expressions
+ * and tests them against the provided URL.
+ */
+function findUrlSettings(websites: any, url: string): any {
   const convertWildcardToRegex = (pattern: string) => {
     return new RegExp(
       "^" + pattern.replace(/\*/g, ".*").replace(/\?/g, ".") + "$"
@@ -20,9 +29,10 @@ const findUrlSettings = (websites: any, url: string) => {
   });
 
   return website;
-};
+}
 
-chrome.runtime.onMessage.addListener(
+// Event listener for messages from the background script
+browser.runtime.onMessage.addListener(
   (
     message: Partial<AppState>,
     sender: any,
@@ -33,20 +43,13 @@ chrome.runtime.onMessage.addListener(
       sendResponse: any;
     }) => void
   ) => {
-    if (message.isOn) {
-      hideElementsIfSettingIsActivated();
-      return;
-    } else {
-      showElements();
-    }
-
     if (message.websites) {
       const isCurrentUrlActive = findUrlSettings(message.websites, url).active;
 
       if (isCurrentUrlActive) {
-        hideElements();
+        toggleAd(true);
       } else {
-        showElements();
+        toggleAd(false);
       }
     }
 
@@ -54,90 +57,30 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-const manipulateElements = (hide: boolean) => {
-  const elements = document.querySelectorAll("a");
-
-  elements.forEach((element) => {
-    const childsDiv = element.querySelectorAll("div");
-
-    childsDiv.forEach((child) => {
-      const regex = /puretech/i;
-      if (child.textContent && regex.test(child.textContent)) {
-        if (hide) {
-          element.style.display = "none";
-          if (
-            element.parentElement &&
-            element.parentElement.className === "searchCard"
-          ) {
-            element.parentElement.style.display = "none";
-          }
-        } else {
-          element.style.display = "flex";
-          if (
-            element.parentElement &&
-            element.parentElement.className === "searchCard"
-          ) {
-            element.parentElement.style.display = "flex";
-          }
-        }
-      }
-    });
-  });
-};
-
-const hideElements = () => {
-  manipulateElements(true);
-};
-
-const showElements = () => {
-  manipulateElements(false);
-};
-
-const hideElementsIfSettingIsActivated = () => {
-  chrome.storage.sync.get(["websites"], (results: { websites: any }) => {
-    const matchedWebsite = findUrlSettings(results.websites, url);
-
-    if (matchedWebsite.active) {
-      hideElements();
-    } else {
-      showElements();
-    }
-  });
-};
-
 // main function
 
-const main = () => {
-  chrome.storage.sync.get(
-    ["isOn", "websites"],
-    (results: { isOn: any; websites: any }) => {
-      let { isOn, websites } = results;
-      if (!isOn) {
-        // set default value
-        chrome.storage.sync.set({ isOn: initialState.isOn });
-        hideElementsIfSettingIsActivated();
-      }
+function main() {
+  browser.storage.sync.get(["websites"], (results: { websites: any }) => {
+    let { websites } = results;
+    if (!websites) {
+      websites = initialState.websites;
+      // set default value
+      browser.storage.sync.set({
+        websites: websites,
+      });
+      toggleAd(true);
 
-      if (!websites) {
-        websites = initialState.websites;
-        // set default value
-        chrome.storage.sync.set({
-          websites: websites,
-        });
-        hideElements();
-
-        return;
-      }
-
-      const matchedWebsite = findUrlSettings(websites, url);
-
-      if (isOn && matchedWebsite.active) {
-        hideElements();
-      } else {
-        showElements();
-      }
+      return;
     }
-  );
-};
+
+    const matchedWebsite = findUrlSettings(websites, url);
+
+    if (matchedWebsite.active) {
+      toggleAd(true);
+    } else {
+      toggleAd(false);
+    }
+  });
+}
 
 main();

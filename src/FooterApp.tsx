@@ -1,13 +1,12 @@
-// import * as React from "react";
 import Box from "@mui/material/Box";
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 
 import GitHubIcon from "@mui/icons-material/GitHub";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
-export default function SimpleBottomNavigation() {
-  // const [value, setValue] = React.useState(0);
+declare const browser: any;
 
+export default function SimpleBottomNavigation() {
   return (
     <Box
       style={{
@@ -30,7 +29,7 @@ export default function SimpleBottomNavigation() {
         >
           <Button
             size="small"
-            href="https://github.com/sponsors/Mikaleb"
+            href="https://ko-fi.com/mikaleb"
             target="_blank"
             rel="noopener"
           >
@@ -39,7 +38,7 @@ export default function SimpleBottomNavigation() {
               // sx={{ color: iconColor }}
               style={{ marginRight: "0.3em" }}
             />
-            Support
+            {browser.i18n.getMessage("support")}
           </Button>
 
           <Typography sx={{ color: "grey.500", fontSize: 13, opacity: "70%" }}>
@@ -49,7 +48,7 @@ export default function SimpleBottomNavigation() {
           <IconButton
             target="_blank"
             rel="noopener"
-            href="https://github.com/Mikaleb?tab=repositories"
+            href="https://github.com/Mikaleb/HidePuretech"
             aria-label="github"
             title="GitHub"
             size="small"

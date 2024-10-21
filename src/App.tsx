@@ -5,7 +5,6 @@ import { Component } from "react";
 import "./App.scss";
 
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
 
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -18,27 +17,32 @@ import { AppState } from "./types/state";
 import FooterApp from "./FooterApp";
 import { initialState } from "./store/initialState";
 
+declare const browser: any;
+
 class App extends Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
 
     this.state = initialState;
 
+    this.getStateFromKey("loading");
     this.getStateFromKey("websites");
-    this.getStateFromKey("isOn");
     this.getStateFromKey("newMotor");
     this.getStateFromKey("motors");
   }
 
   sendMessageToContentScript = async (newState: Partial<AppState>) => {
-    // send it to each tabs that match the content_scripts
+    // send it to each tabs that match the content_scripts, and active (no need to wake up sleeping tabs)
 
     const tabs = await chrome.tabs.query({
-      url: this.state.websites.map((website) => website.url),
+      url: newState.websites
+        ? newState.websites.map((website) => website.url)
+        : [],
     });
 
     tabs.forEach((tab: any) => {
-      chrome.tabs
+      if (!tab.id || tab.id === undefined) return;
+      browser.tabs
         .sendMessage(tab.id, newState)
         .then((response: { title: any; url: any }) => {
           console.info(
@@ -53,19 +57,25 @@ class App extends Component<{}, AppState> {
     });
   };
 
-  switchWebsiteActive = (site: AppState["websites"][0]) => {
-    const websites = this.state.websites.map((website) => {
-      if (website.title === site.title) {
-        website.active = !website.active;
-      }
-      return website;
-    });
-    this.setState({
-      websites,
-    });
+  toggleWebsiteStatus = (site: AppState["websites"][0]) => {
+    this.setState({ loading: true });
 
-    chrome.storage.sync.set({ websites });
-    this.sendMessageToContentScript({ websites: [site] });
+    this.setState((prevState) => {
+      const websites = prevState.websites.map((website) => {
+        if (website.title === site.title) {
+          website.active = !website.active;
+        }
+        return website;
+      });
+
+      chrome.storage.sync.set({ websites });
+      if (site) {
+        this.sendMessageToContentScript({ websites: [site] });
+      }
+
+      return { websites };
+    });
+    this.setState({ loading: false });
   };
 
   getStateFromKey = (value: string | number) => {
@@ -78,66 +88,24 @@ class App extends Component<{}, AppState> {
     });
   };
 
-  handleToggleActivated = () => {
-    chrome.storage.sync.get("isOn", (results: { isOn: any }) => {
-      const newIsOn = !results.isOn;
-      chrome.storage.sync.set({ isOn: newIsOn });
-      this.setState({ isOn: newIsOn });
-      this.sendMessageToContentScript({ isOn: newIsOn });
-    });
-  };
-
   render() {
     return (
       <div>
         <Box
           style={{
-            padding: "1rem",
+            padding: "0.5rem",
           }}
         >
           <Typography
-            variant="h4"
+            variant="h5"
             align="center"
             style={{
-              padding: "0em 1em",
+              padding: "0.3em 1em",
             }}
             className="title"
           >
-            {chrome.i18n.getMessage("settings")}
+            {browser.i18n.getMessage("brand")}
           </Typography>
-
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            margin={"1.3em 0em"}
-          >
-            <button
-              onClick={this.handleToggleActivated}
-              className={`skeue--button skeue--button${
-                this.state.isOn ? "__isOn" : "__isOff"
-              }`}
-            >
-              <div
-                className={`skeue--button__light ${
-                  this.state.isOn
-                    ? "skeue--button__light--on"
-                    : "skeue--button__light--off"
-                }`}
-              ></div>
-
-              <p
-                style={{
-                  textTransform: "uppercase",
-                }}
-              >
-                {this.state.isOn
-                  ? chrome.i18n.getMessage("isOn")
-                  : chrome.i18n.getMessage("isOff")}
-              </p>
-            </button>
-          </Box>
-          <Divider style={{ margin: "1em 0em" }} />
 
           <Container
             style={{
@@ -145,9 +113,21 @@ class App extends Component<{}, AppState> {
               flexDirection: "column",
               alignItems: "center",
             }}
+            maxWidth="xs"
           >
-            {this.state.websites.map((site, index) => (
-              <Container key={index}>
+            <Typography
+              align="left"
+              variant="subtitle2"
+              style={{
+                padding: "0.8em 1em",
+              }}
+              className="info"
+            >
+              {browser.i18n.getMessage("instructions")}
+            </Typography>
+
+            {this.state.websites.map((site, _index) => (
+              <Container key={site.title}>
                 <FormGroup>
                   <FormControlLabel
                     label={site.title}
@@ -156,7 +136,12 @@ class App extends Component<{}, AppState> {
                         id="airplane-mode"
                         value={site.active ? "on" : "off"}
                         checked={site.active}
-                        onClick={() => this.switchWebsiteActive(site)}
+                        disabled={this.state.loading !== false}
+                        onClick={() => {
+                          if (this.state.loading === false) {
+                            this.toggleWebsiteStatus(site);
+                          }
+                        }}
                       ></Switch>
                     }
                   />
