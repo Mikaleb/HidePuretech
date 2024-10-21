@@ -5,7 +5,6 @@ import { Component } from "react";
 import "./App.scss";
 
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
 
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";

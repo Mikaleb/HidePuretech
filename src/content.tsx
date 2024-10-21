@@ -57,21 +57,6 @@ browser.runtime.onMessage.addListener(
   }
 );
 
-/**
- * Hides elements on the page if the setting for the current URL is activated.
- */
-function hideElementsIfSettingIsActivated(): void {
-  browser.storage.sync.get(["websites"], (results: { websites: any }) => {
-    const matchedWebsite = findUrlSettings(results.websites, url);
-
-    if (matchedWebsite.active) {
-      toggleAd(true);
-    } else {
-      toggleAd(false);
-    }
-  });
-}
-
 // main function
 
 function main() {

@@ -1,5 +1,3 @@
-import { AppState } from "../types/state";
-
 /**
  * Hide all motor item from the list of car ads
  */

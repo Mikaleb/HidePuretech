@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Hide Puretech",
-  "description": "Hide Puretech motors from car listing",
+  "description": "Hide Puretech motors from car listing on La Centrale, AramisAuto and LeBonCoin",
   "version": "1.1.2",
   "action": {
     "default_popup": "index.html"
@@ -23,14 +23,5 @@
         "https://*.leboncoin.fr/recherche*"
       ]
     }
-  ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "hide-puretech@mikaleb.org",
-      "strict_min_version": "109.0"
-    }
-  },
-  "current": {
-    "version": "1.1.2"
-  }
+  ]
 }

@@ -14,7 +14,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "zip": "zip -r hide-puretech.zip dist",
+    "zip": "cd dist && zip -r ../hide-puretech.zip . -x '*.git*' && cd ..",
     "deploy": "npm run build && npm run zip",
     "release": "release-it"
   },
