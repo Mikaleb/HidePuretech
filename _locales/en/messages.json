@@ -1,7 +1,9 @@
 {
   "add": { "message": "Add a motor to hide" },
-  "isOn": { "message": "On" },
-  "isOff": { "message": "Off" },
+  "brand": { "message": "Hide Puretech" },
   "settings": { "message": "Settings" },
+  "instructions": {
+    "message": "Toggle each option for each site :"
+  },
   "support": { "message": "Support" }
 }

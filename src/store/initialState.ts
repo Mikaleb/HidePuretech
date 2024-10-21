@@ -1,15 +1,20 @@
 export const initialState = {
-  isOn: true,
+  loading: false,
   motors: [],
   websites: [
     {
       title: "lacentrale.fr",
-      url: "https://*.lacentrale.fr/listing?*",
+      url: "https://*.lacentrale.fr/*",
       active: true,
     },
     {
       title: "aramisauto.com",
       url: "https://*.aramisauto.com/*",
+      active: true,
+    },
+    {
+      title: "leboncoin.fr",
+      url: "https://*.leboncoin.fr/*",
       active: true,
     },
   ],

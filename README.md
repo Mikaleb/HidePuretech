@@ -8,6 +8,7 @@ This Chrome extension hides the PureTech listings on supported websites.
 
 - [LaCentrale](https://www.lacentrale.fr/)
 - [AramisAuto](https://www.aramisauto.com/)
+- [LeBonCoin](https://www.leboncoin.fr/)
 
 ### Settings
 

@@ -14,21 +14,19 @@
     "48": "public/icon48.png",
     "128": "public/icon128.png"
   },
-  "background": {
-    "scripts": ["browser-polyfill.min.js"]
-  },
   "content_scripts": [
     {
-      "js": ["browser-polyfill.min.js", "src/content.tsx"],
+      "js": ["src/content.tsx"],
       "matches": [
-        "https://*.lacentrale.fr/listing?*",
-        "https://*.aramisauto.com/*"
+        "https://*.lacentrale.fr/*",
+        "https://*.aramisauto.com/*",
+        "https://*.leboncoin.fr/recherche*"
       ]
     }
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "hide-puretech@mikaleb.com",
+      "id": "hide-puretech@mikaleb.org",
       "strict_min_version": "109.0"
     }
   },

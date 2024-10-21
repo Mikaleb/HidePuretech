@@ -1,7 +1,9 @@
 {
   "add": { "message": "Ajouter un moteur a masquer" },
-  "isOn": { "message": "Activé" },
-  "isOff": { "message": "Désactivé" },
+  "brand": { "message": "Hide Puretech" },
   "settings": { "message": "Paramètres" },
-  "support": { "message": "Soutenir" }
+  "instructions": {
+    "message": "Activer ou désactiver chaque option pour chaque site :"
+  },
+  "support": { "message": "Nous soutenir" }
 }
