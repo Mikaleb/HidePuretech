@@ -2,14 +2,11 @@
   "manifest_version": 3,
   "name": "Hide Puretech",
   "description": "Hide Puretech motors from car listing on La Centrale, AramisAuto and LeBonCoin",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": [
-    "storage",
-    "tabs"
-  ],
+  "permissions": ["storage", "tabs"],
   "default_locale": "en",
   "icons": {
     "16": "public/icon16.png",
@@ -19,9 +16,7 @@
   },
   "content_scripts": [
     {
-      "js": [
-        "src/content.tsx"
-      ],
+      "js": ["src/content.tsx"],
       "matches": [
         "https://*.lacentrale.fr/*",
         "https://*.aramisauto.com/*",
