@@ -1,3 +1,5 @@
+<p align="center"><img src="https://github.com/Mikaleb/HidePuretech/blob/main/public/icon128.png?raw=true" /></p>
+
 # Hide PureTech
 
 ## Features
@@ -12,7 +14,6 @@ This Chrome extension hides the PureTech listings on supported websites.
 
 ### Settings
 
-- **Hide PureTech**: Enable or disable the hiding of PureTech listings
 - See all the active websites and toggle them
 
 ## Debugging

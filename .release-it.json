@@ -6,8 +6,11 @@
     "@release-it/bumper": {
       "out": {
         "file": "manifest.json",
-        "path": "current.version"
+        "path": "version"
       }
     }
+  },
+  "hooks": {
+    "after:bump": "yarn deploy"
   }
 }

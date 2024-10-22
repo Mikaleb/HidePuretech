@@ -20,11 +20,14 @@
       "matches": [
         "https://*.lacentrale.fr/*",
         "https://*.aramisauto.com/*",
-        "https://*.leboncoin.fr/recherche*"
+        "https://*.leboncoin.fr/*"
       ]
     }
   ],
-  "current": {
-    "version": "2.0.0"
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "hide-puretech@mikaleb.org",
+      "strict_min_version": "109.0"
+    }
   }
 }
