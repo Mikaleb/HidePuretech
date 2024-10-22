@@ -2,15 +2,32 @@
 
 # Hide PureTech
 
+<div style="display: inline-flex;
+  flex-wrap: wrap;gap: 0.2em;">
+
+<a href="https://github.com/Mikaleb/HidePuretech">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/Mikaleb/HidePuretech?style=flat-square&logo=github&logoColor=fff">
+</a>
+
+<a href="https://chrome.google.com/webstore/detail/hide-puretech/jphlfplfmjdbbjnegonboddmfgdkdkgi">
+<img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/jphlfplfmjdbbjnegonboddmfgdkdkgi?style=flat-square&logo=googlechrome&logoColor=fff&color=%234285F4">
+</a>
+
+<a href="https://addons.mozilla.org/fr/firefox/addon/hide-puretech/">
+<img alt="Mozilla Add-on Users" src="https://img.shields.io/amo/users/hide-puretech?style=flat-square&logo=firefox&logoColor=fff&color=%23FF7139">
+</a>
+
+</div>
+
 ## Features
 
-This Chrome extension hides the PureTech listings on supported websites.
+HidePuretech is a browser extension that hides any car listings on supported websites that contain the word "Puretech", as it's a problematic engine.
 
 ### Supported websites
 
-- [LaCentrale](https://www.lacentrale.fr/)
-- [AramisAuto](https://www.aramisauto.com/)
-- [LeBonCoin](https://www.leboncoin.fr/)
+- <img src="https://lacentrale.fr/static/fragment-head/media/favicon-32.cc0580c7.png" style="max-width: 16px;"> [LaCentrale](https://www.lacentrale.fr/)
+- <img src="https://www.aramisauto.com/favicon.ico" style="max-width: 16px;"> [AramisAuto](https://www.aramisauto.com/)
+- <img src="https://www.leboncoin.fr/_next/static/media/favicon.2b8b94c9.ico" style="max-width: 16px;"> [LeBonCoin](https://www.leboncoin.fr/)
 
 ### Settings
 
@@ -33,7 +50,5 @@ To debug the extension, open the Chrome extensions page by navigating to `chrome
 
 ### Roadmap
 
-- [ ] Add support for more websites
 - [ ] Add support for more languages
 - [ ] Add support for more engines
-- [ ] Add support for more browsers
