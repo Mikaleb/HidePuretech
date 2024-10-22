@@ -25,9 +25,9 @@ HidePuretech is a browser extension that hides any car listings on supported web
 
 ### Supported websites
 
-- <img src="https://lacentrale.fr/static/fragment-head/media/favicon-32.cc0580c7.png" style="max-width: 16px;"> [LaCentrale](https://www.lacentrale.fr/)
-- <img src="https://www.aramisauto.com/favicon.ico" style="max-width: 16px;"> [AramisAuto](https://www.aramisauto.com/)
-- <img src="https://www.leboncoin.fr/_next/static/media/favicon.2b8b94c9.ico" style="max-width: 16px;"> [LeBonCoin](https://www.leboncoin.fr/)
+- <img src="https://lacentrale.fr/static/fragment-head/media/favicon-32.cc0580c7.png" style="width: 16px;"> [LaCentrale](https://www.lacentrale.fr/)
+- <img src="https://www.aramisauto.com/favicon.ico" style="width: 16px;"> [AramisAuto](https://www.aramisauto.com/)
+- <img src="https://www.leboncoin.fr/_next/static/media/favicon.2b8b94c9.ico" style="width: 16px;"> [LeBonCoin](https://www.leboncoin.fr/)
 
 ### Settings
 
