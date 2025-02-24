@@ -46,6 +46,8 @@ browser.runtime.onMessage.addListener(
     if (message.websites) {
       const isCurrentUrlActive = findUrlSettings(message.websites, url).active;
 
+      const vendor = new Vendor(url);
+
       if (isCurrentUrlActive) {
         toggleAd(true);
       } else {

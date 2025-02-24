@@ -1,94 +1,135 @@
+import { Vendors } from "../types/vendors";
+
+const motorsToHide = ["puretech", "pure tech", "pure-tech", "PureTech"];
+
+class Vendor {
+  constructor(
+    public name: Vendors,
+    public parentClasses: string[] = [],
+    public adClasses: string[] = []
+  ) {
+    switch (name) {
+      case Vendors.LeBonCoin:
+        this.parentClasses = ["mb-lg"];
+        break;
+      case Vendors.LaCentrale:
+        this.parentClasses = [
+          "searchCard",
+          "listingContainer",
+          "searchCardContainer",
+        ];
+        this.adClasses = ["lien-fiche", "link_veh"];
+        break;
+      case Vendors.AutoSphere:
+        this.parentClasses = [
+          "thumbnail_vehicle",
+          "fiche-synth",
+          "fiche-synth\n",
+        ];
+        break;
+      case Vendors.AramisAuto:
+        this.parentClasses = [];
+        break;
+      default:
+        this.parentClasses = [];
+        this.adClasses = [];
+    }
+  }
+}
+
 /**
  * Hide all motor item from the list of car ads
  */
 export function toggleAd(hide: boolean) {
-  const motorsToHide = ["puretech", "pure tech", "pure-tech", "PureTech"];
   const regex = new RegExp(motorsToHide.join("|"), "i");
 
-  const carAdsWithLinks = document.querySelectorAll("a");
+  const hideElementDOM = (vendor: Vendor, element: Element) => {
+    if (element instanceof HTMLElement) {
+      element.style.display = "none";
+      let parentElement = element.parentElement;
 
-  const laCentrale_ParentsClass = [
-    "searchCard",
-    "listingContainer",
-    "searchCardContainer",
-  ];
-
-  const lbc_ParentsClass = ["mb-lg"];
-
-  const hideElement = (element: HTMLAnchorElement) => {
-    element.style.display = "none";
-    if (
-      element.parentElement &&
-      (laCentrale_ParentsClass.includes(element.parentElement.className) ||
-        lbc_ParentsClass.includes(element.parentElement.className))
-    ) {
-      element.parentElement.style.display = "none";
+      while (
+        parentElement &&
+        !vendor.parentClasses.some((cls) =>
+          parentElement?.classList.contains(cls)
+        )
+      ) {
+        if (!parentElement) {
+          break;
+        }
+        parentElement = parentElement.parentElement;
+      }
+      if (parentElement) {
+        parentElement.style.display = "none";
+      }
     }
   };
 
-  const showElement = (element: HTMLAnchorElement) => {
+  const showElement = (vendor: Vendor, element: HTMLAnchorElement) => {
     const showForAramisauto = (element: HTMLAnchorElement) => {
       element.style.display = "block";
     };
 
-    const showForLaCentrale = (element: HTMLAnchorElement) => {
+    const showForParent = (
+      parentClasses: string | string[],
+      element: HTMLAnchorElement
+    ) => {
       element.style.display = "flex";
       if (
         element.parentElement &&
-        laCentrale_ParentsClass.includes(element.parentElement.className)
+        parentClasses.includes(element.parentElement.className)
       ) {
         element.parentElement.style.display = "flex";
       }
     };
 
-    const showForLbc = (element: HTMLAnchorElement) => {
-      element.style.display = "flex";
-      if (
-        element.parentElement &&
-        lbc_ParentsClass.includes(element.parentElement.className)
-      ) {
-        element.parentElement.style.display = "flex";
-      }
-    };
-
-    if (element.href.includes("aramisauto")) {
+    if (vendor.name === Vendors.AramisAuto) {
       showForAramisauto(element);
     }
-    if (element.href.includes("lacentrale")) {
-      showForLaCentrale(element);
+    if (vendor.name === Vendors.LaCentrale) {
+      showForParent(vendor.parentClasses, element);
     }
-    if (element.href.includes("leboncoin")) {
-      showForLbc(element);
+    if (vendor.name === Vendors.LeBonCoin) {
+      showForParent(vendor.parentClasses, element);
+    }
+    if (vendor.name === Vendors.AutoSphere) {
+      showForParent(vendor.parentClasses, element);
     }
   };
 
-  //   let nbOfAdsChanged = 0;
+  if (window.location.href.includes("autosphere")) {
+    const carAdsWithLinks = document.querySelectorAll(
+      vendor.adClasses.map((className) => `a.${className}`).join(", ")
+    );
+    console.debug("🚀 ~ toggleAd ~ carAdsWithLinks:", carAdsWithLinks);
 
-  carAdsWithLinks.forEach((element) => {
-    const childsDiv = element.querySelectorAll("div");
-
-    childsDiv.forEach((child: HTMLDivElement) => {
-      if (child.textContent && regex.test(child.textContent)) {
-        // nbOfAdsChanged++;
-        hide ? hideElement(element) : showElement(element);
-      }
+    carAdsWithLinks.forEach((element) => {
+      element.childNodes.forEach((child) => {
+        if (child.textContent && regex.test(child.textContent)) {
+          hide
+            ? hideElementDOM(new Vendor(Vendors.AutoSphere), element)
+            : showElement(
+                new Vendor(Vendors.AutoSphere),
+                element as HTMLAnchorElement
+              );
+        }
+      });
     });
-  });
+  } else {
+    const carAdsWithLinks = document.querySelectorAll("a");
 
-  //   TODO : later
-  //   // add a little text line to listingContainer div to show how many ads have been hidden
-  //   const resultList = document.querySelector(".resultList");
-  //   const hidePureTechResult = document.getElementById("hide-puretech-result");
-
-  //   if (hidePureTechResult) {
-  //     hidePureTechResult.textContent = `${nbOfAdsChanged} ads have been hidden`;
-  //   } else {
-  //     const nbOfAdsChangedText = document.createElement("p");
-  //     nbOfAdsChangedText.id = "hide-puretech-result";
-  //     nbOfAdsChangedText.textContent = `${nbOfAdsChanged} ads have been hidden`;
-  //     // add nbOfAdsChangedText as first child of resultList
-  //     if (resultList) {
-  //       resultList.insertBefore(nbOfAdsChangedText, resultList.firstChild);
-  //     }
-  //   }
+    carAdsWithLinks.forEach((element) => {
+      const childsDiv = element.querySelectorAll("div");
+      childsDiv.forEach((child: HTMLDivElement) => {
+        if (child.textContent && regex.test(child.textContent)) {
+          hide
+            ? hideElementDOM(new Vendor(Vendors.LaCentrale), element)
+            : showElement(
+                new Vendor(Vendors.LaCentrale),
+                element as HTMLAnchorElement
+              );
+        }
+      });
+    });
+  }
 }
