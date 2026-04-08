@@ -1,107 +1,15 @@
-/* CSS HEX */
---timberwolf: #d8d9d7ff;
---persian-green: #1b998bff;
---vermilion: #f24535ff;
---gunmetal: #30343fff;
---eerie-black: #1b2021ff;
+:root {
+  /* CSS HEX */
+  --timberwolf: #d8d9d7ff;
+  --persian-green: #1b998bff;
+  --vermilion: #f24535ff;
+  --gunmetal: #30343fff;
+  --eerie-black: #1b2021ff;
 
-/* CSS HSL */
---timberwolf: hsla(90, 3%, 85%, 1);
---persian-green: hsla(173, 70%, 35%, 1);
---vermilion: hsla(5, 88%, 58%, 1);
---gunmetal: hsla(224, 14%, 22%, 1);
---eerie-black: hsla(190, 10%, 12%, 1);
-
-/* SCSS HEX */
-$timberwolf: #d8d9d7ff;
-$persian-green: #1b998bff;
-$vermilion: #f24535ff;
-$gunmetal: #30343fff;
-$eerie-black: #1b2021ff;
-
-/* SCSS HSL */
-$timberwolf: hsla(90, 3%, 85%, 1);
-$persian-green: hsla(173, 70%, 35%, 1);
-$vermilion: hsla(5, 88%, 58%, 1);
-$gunmetal: hsla(224, 14%, 22%, 1);
-$eerie-black: hsla(190, 10%, 12%, 1);
-
-/* SCSS RGB */
-$timberwolf: rgba(216, 217, 215, 1);
-$persian-green: rgba(27, 153, 139, 1);
-$vermilion: rgba(242, 69, 53, 1);
-$gunmetal: rgba(48, 52, 63, 1);
-$eerie-black: rgba(27, 32, 33, 1);
-
-/* SCSS Gradient */
-$gradient-top: linear-gradient(
-  0deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-right: linear-gradient(
-  90deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-bottom: linear-gradient(
-  180deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-left: linear-gradient(
-  270deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-top-right: linear-gradient(
-  45deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-bottom-right: linear-gradient(
-  135deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-top-left: linear-gradient(
-  225deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-bottom-left: linear-gradient(
-  315deg,
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
-$gradient-radial: radial-gradient(
-  #d8d9d7ff,
-  #1b998bff,
-  #f24535ff,
-  #30343fff,
-  #1b2021ff
-);
+  /* CSS HSL */
+  --timberwolf-hsl: hsla(90, 3%, 85%, 1);
+  --persian-green-hsl: hsla(173, 70%, 35%, 1);
+  --vermilion-hsl: hsla(5, 88%, 58%, 1);
+  --gunmetal-hsl: hsla(224, 14%, 22%, 1);
+  --eerie-black-hsl: hsla(190, 10%, 12%, 1);
+}

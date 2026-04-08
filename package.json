@@ -10,7 +10,9 @@
   "author": "Mikaleb",
   "scripts": {
     "dev": "vite",
-    "dev-ff": "vite build --watch",
+    "dev:ff": "mkdir -p .web-ext && TMPDIR=$PWD/.web-ext web-ext run --source-dir ./dist",
+    "watch": "vite build --watch",
+    "watch:ff": "vite build --watch",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -42,7 +44,8 @@
     "release-it": "^17.6.0",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "web-ext": "^8.2.0"
   },
   "config": {
     "commitizen": {

@@ -41,18 +41,7 @@ class App extends Component<{}, AppState> {
 
     tabs.forEach((tab: any) => {
       if (!tab.id || tab.id === undefined) return;
-      browser.tabs
-        .sendMessage(tab.id, newState)
-        .then((response: { title: any; url: any }) => {
-          console.info(
-            "Popup received response from tab with title '%s' and url %s",
-            response.title,
-            response.url
-          );
-        })
-        .catch((error: any) => {
-          console.warn("Popup could not send message to tab %d", tab.id, error);
-        });
+      browser.tabs.sendMessage(tab.id, newState).catch(() => {});
     });
   };
 
@@ -60,15 +49,14 @@ class App extends Component<{}, AppState> {
     this.setState({ loading: true });
 
     this.setState((prevState) => {
+      const updatedSite = { ...site, active: !site.active };
       const websites = prevState.websites.map((website) =>
-        website.title === site.title
-          ? { ...website, active: !website.active }
-          : website
+        website.title === site.title ? updatedSite : website
       );
 
       chrome.storage.sync.set({ websites });
-      if (site) {
-        this.sendMessageToContentScript({ websites: [site] });
+      if (updatedSite) {
+        this.sendMessageToContentScript({ websites: [updatedSite] });
       }
 
       return { websites };
@@ -82,7 +70,7 @@ class App extends Component<{}, AppState> {
         m.title === motor.title ? { ...m, active: !m.active } : m
       );
       chrome.storage.sync.set({ motors });
-      this.sendMessageToContentScript({ motors, websites: this.state.websites });
+      this.sendMessageToContentScript({ motors, websites: prevState.websites });
       return { motors };
     });
   };
@@ -146,7 +134,7 @@ class App extends Component<{}, AppState> {
                         value={site.active ? "on" : "off"}
                         checked={site.active}
                         disabled={this.state.loading !== false}
-                        onClick={() => {
+                        onChange={() => {
                           if (this.state.loading === false) {
                             this.toggleWebsiteStatus(site);
                           }
@@ -187,7 +175,7 @@ class App extends Component<{}, AppState> {
                       value={motor.active ? "on" : "off"}
                       checked={motor.active}
                       disabled={this.state.loading !== false}
-                      onClick={() => {
+                      onChange={() => {
                         if (this.state.loading === false) {
                           this.toggleMotorStatus(motor);
                         }
