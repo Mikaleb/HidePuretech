@@ -34,11 +34,10 @@ class App extends Component<{}, AppState> {
   sendMessageToContentScript = async (newState: Partial<AppState>) => {
     // send it to each tabs that match the content_scripts, and active (no need to wake up sleeping tabs)
 
-    const tabs = await chrome.tabs.query({
-      url: newState.websites
-        ? newState.websites.map((website) => website.url)
-        : [],
-    });
+    const urlPatterns = newState.websites
+      ? newState.websites.map((w) => w.url)
+      : this.state.websites.map((w) => w.url);
+    const tabs = await chrome.tabs.query({ url: urlPatterns });
 
     tabs.forEach((tab: any) => {
       if (!tab.id || tab.id === undefined) return;
@@ -76,6 +75,17 @@ class App extends Component<{}, AppState> {
       return { websites };
     });
     this.setState({ loading: false });
+  };
+
+  toggleMotorStatus = (motor: AppState["motors"][0]) => {
+    this.setState((prevState) => {
+      const motors = prevState.motors.map((m) =>
+        m.title === motor.title ? { ...m, active: !m.active } : m
+      );
+      chrome.storage.sync.set({ motors });
+      this.sendMessageToContentScript({ motors });
+      return { motors };
+    });
   };
 
   getStateFromKey = (value: string | number) => {
@@ -150,6 +160,46 @@ class App extends Component<{}, AppState> {
             ))}
           </Container>
         </Box>
+
+        <Container
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+          maxWidth="xs"
+        >
+          <Typography
+            align="left"
+            variant="subtitle2"
+            style={{ padding: "0.8em 1em" }}
+            className="info"
+          >
+            Motors
+          </Typography>
+
+          {this.state.motors.map((motor) => (
+            <Container key={motor.title}>
+              <FormGroup>
+                <FormControlLabel
+                  label={motor.title}
+                  control={
+                    <Switch
+                      value={motor.active ? "on" : "off"}
+                      checked={motor.active}
+                      disabled={this.state.loading !== false}
+                      onClick={() => {
+                        if (this.state.loading === false) {
+                          this.toggleMotorStatus(motor);
+                        }
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+            </Container>
+          ))}
+        </Container>
 
         <FooterApp />
       </div>
