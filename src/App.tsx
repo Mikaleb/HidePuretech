@@ -60,12 +60,11 @@ class App extends Component<{}, AppState> {
     this.setState({ loading: true });
 
     this.setState((prevState) => {
-      const websites = prevState.websites.map((website) => {
-        if (website.title === site.title) {
-          website.active = !website.active;
-        }
-        return website;
-      });
+      const websites = prevState.websites.map((website) =>
+        website.title === site.title
+          ? { ...website, active: !website.active }
+          : website
+      );
 
       chrome.storage.sync.set({ websites });
       if (site) {
@@ -83,7 +82,7 @@ class App extends Component<{}, AppState> {
         m.title === motor.title ? { ...m, active: !m.active } : m
       );
       chrome.storage.sync.set({ motors });
-      this.sendMessageToContentScript({ motors });
+      this.sendMessageToContentScript({ motors, websites: this.state.websites });
       return { motors };
     });
   };

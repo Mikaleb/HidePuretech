@@ -59,6 +59,7 @@ function getParentCard(vendor: Vendor, element: Element): HTMLElement | null {
   let parent = element.parentElement;
   while (
     parent &&
+    parent !== document.body &&
     !vendor.parentClasses.some((cls) => parent?.classList.contains(cls))
   ) {
     parent = parent.parentElement;
