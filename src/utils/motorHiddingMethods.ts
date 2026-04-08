@@ -43,7 +43,7 @@ class Vendor {
         this.adClasses = ["lien-fiche", "link_veh"];
         break;
       case Vendors.AutoSphere:
-        this.parentClasses = ["thumbnail_vehicle", "fiche-synth", "fiche-synth\n"];
+        this.parentClasses = ["thumbnail_vehicle", "fiche-synth"];
         break;
       case Vendors.AramisAuto:
         this.parentClasses = [];
@@ -90,7 +90,7 @@ export function toggleAd(hide: boolean, activeMotors: Motor[]) {
 
   const vendor = getVendorFromUrl(window.location.href);
 
-  if (vendor.name === Vendors.AutoSphere) {
+  if (vendor.name === Vendors.AutoSphere && vendor.adClasses.length > 0) {
     const carAdsWithLinks = document.querySelectorAll(
       vendor.adClasses.map((cls) => `a.${cls}`).join(", ")
     );
