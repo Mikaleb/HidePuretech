@@ -6,7 +6,7 @@ export type Motor = {
 
 export type AppState = {
   loading: boolean;
-  newMotor?: { title: string };
+  newMotor?: Partial<Motor>;
   newWebsite?: {
     title: string;
     url: string;
