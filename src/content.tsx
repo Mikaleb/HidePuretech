@@ -1,37 +1,19 @@
 import { initialState } from "./store/initialState";
-import { AppState } from "./types/state";
+import { AppState, Motor } from "./types/state";
 import { toggleAd } from "./utils/motorHiddingMethods";
 
 declare const browser: any;
 
 const url = location.href;
 
-/**
- * Finds the settings for a given URL from a list of websites.
- *
- * @param websites - An array of website objects, each containing a `url` property.
- * @param url - The URL to find settings for.
- * @returns The website object that matches the given URL, or `undefined` if no match is found.
- *
- * The function converts wildcard patterns in the website URLs to regular expressions
- * and tests them against the provided URL.
- */
 function findUrlSettings(websites: any, url: string): any {
-  const convertWildcardToRegex = (pattern: string) => {
-    return new RegExp(
-      "^" + pattern.replace(/\*/g, ".*").replace(/\?/g, ".") + "$"
-    );
-  };
-
-  const website = websites.find((website: { url: string }) => {
-    const regex = convertWildcardToRegex(website.url);
-    return regex.test(url);
-  });
-
-  return website;
+  const convertWildcardToRegex = (pattern: string) =>
+    new RegExp("^" + pattern.replace(/\*/g, ".*").replace(/\?/g, ".") + "$");
+  return websites.find((website: { url: string }) =>
+    convertWildcardToRegex(website.url).test(url)
+  );
 }
 
-// Event listener for messages from the background script
 browser.runtime.onMessage.addListener(
   (
     message: Partial<AppState>,
@@ -43,44 +25,49 @@ browser.runtime.onMessage.addListener(
       sendResponse: any;
     }) => void
   ) => {
-    if (message.websites) {
-      const isCurrentUrlActive = findUrlSettings(message.websites, url).active;
+    if (message.websites || message.motors) {
+      const websites = message.websites ?? initialState.websites;
+      const motors: Motor[] = message.motors ?? initialState.motors;
 
-      if (isCurrentUrlActive) {
-        toggleAd(true);
-      } else {
-        toggleAd(false);
-      }
+      const matchedSite = findUrlSettings(websites, url);
+      if (!matchedSite) return;
+
+      const activeMotors = matchedSite.active
+        ? motors.filter((m) => m.active)
+        : [];
+
+      toggleAd(matchedSite.active && activeMotors.length > 0, activeMotors);
     }
 
     sendResponse({ status: "received", message, sender, sendResponse });
   }
 );
 
-// main function
-
 function main() {
-  browser.storage.sync.get(["websites"], (results: { websites: any }) => {
-    let { websites } = results;
-    if (!websites) {
-      websites = initialState.websites;
-      // set default value
-      browser.storage.sync.set({
-        websites: websites,
-      });
-      toggleAd(true);
+  browser.storage.sync.get(
+    ["websites", "motors"],
+    (results: { websites?: any; motors?: Motor[] }) => {
+      let { websites, motors } = results;
 
-      return;
+      if (!websites) {
+        websites = initialState.websites;
+        browser.storage.sync.set({ websites });
+      }
+      if (!motors) {
+        motors = initialState.motors;
+        browser.storage.sync.set({ motors });
+      }
+
+      const matchedWebsite = findUrlSettings(websites, url);
+      if (!matchedWebsite) return;
+
+      const activeMotors = matchedWebsite.active
+        ? motors.filter((m: Motor) => m.active)
+        : [];
+
+      toggleAd(matchedWebsite.active && activeMotors.length > 0, activeMotors);
     }
-
-    const matchedWebsite = findUrlSettings(websites, url);
-
-    if (matchedWebsite.active) {
-      toggleAd(true);
-    } else {
-      toggleAd(false);
-    }
-  });
+  );
 }
 
 main();
