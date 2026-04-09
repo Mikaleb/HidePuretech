@@ -12,4 +12,6 @@ export const initialState = {
     { title: "leboncoin.fr",   url: "https://*.leboncoin.fr/*",   active: true },
     { title: "autosphere.fr",  url: "https://*.autosphere.fr/*",  active: true },
   ],
+  hideCompletely: true,
+  showPlaceholderIcon: false,
 };

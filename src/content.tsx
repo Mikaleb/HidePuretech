@@ -8,6 +8,8 @@ const url = location.href;
 
 let currentWebsites = initialState.websites;
 let currentMotors = initialState.motors;
+let hideCompletely = initialState.hideCompletely;
+let showPlaceholderIcon = initialState.showPlaceholderIcon;
 
 function findUrlSettings(websites: any, url: string): any {
   const convertWildcardToRegex = (pattern: string) =>
@@ -25,7 +27,7 @@ const runToggle = async () => {
     ? currentMotors.filter((m: Motor) => m.active)
     : [];
   
-  await toggleAd(matchedWebsite.active && activeMotors.length > 0, activeMotors);
+  await toggleAd(matchedWebsite.active && activeMotors.length > 0, activeMotors, hideCompletely, showPlaceholderIcon);
 };
 
 const debouncedToggle = debounce(runToggle, 300);
@@ -66,6 +68,8 @@ browser.runtime.onMessage.addListener(
       }
     }
     if (message.motors) currentMotors = message.motors;
+    if (message.hideCompletely !== undefined) hideCompletely = message.hideCompletely;
+    if (message.showPlaceholderIcon !== undefined) showPlaceholderIcon = message.showPlaceholderIcon;
 
     runToggle();
     sendResponse({ status: "received" });
@@ -77,6 +81,8 @@ browser.storage.onChanged.addListener((changes: any, area: string) => {
   if (area === "sync") {
     if (changes.websites) currentWebsites = changes.websites.newValue;
     if (changes.motors) currentMotors = changes.motors.newValue;
+    if (changes.hideCompletely) hideCompletely = changes.hideCompletely.newValue;
+    if (changes.showPlaceholderIcon) showPlaceholderIcon = changes.showPlaceholderIcon.newValue;
     runToggle();
   }
 });
@@ -91,10 +97,12 @@ function debounce(func: Function, wait: number) {
 
 function main() {
   browser.storage.sync.get(
-    ["websites", "motors"],
-    (results: { websites?: any; motors?: Motor[] }) => {
+    ["websites", "motors", "hideCompletely", "showPlaceholderIcon"],
+    (results: { websites?: any; motors?: Motor[]; hideCompletely?: boolean; showPlaceholderIcon?: boolean }) => {
       if (results.websites) currentWebsites = results.websites;
       if (results.motors) currentMotors = results.motors;
+      if (results.hideCompletely !== undefined) hideCompletely = results.hideCompletely;
+      if (results.showPlaceholderIcon !== undefined) showPlaceholderIcon = results.showPlaceholderIcon;
 
       runToggle();
       setupObserver();

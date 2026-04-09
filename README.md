@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/Mikaleb/HidePuretech/blob/main/public/icon128.png?raw=true" /></p>
+<p align="center"><img src="https://github.com/Mikaleb/HidePuretech/blob/main/public/favicon-128.png?raw=true" /></p>
 
 # Hide PureTech
 
@@ -14,7 +14,10 @@
 
 ## Features
 
-HidePuretech is a browser extension that visually disables car listings on supported websites that contain problematic engines (PureTech, BlueHDi 1.5). Matched listings are dimmed, grayscaled, and struck through — still visible but clearly marked.
+HidePuretech is a browser extension that filters car listings on supported websites containing problematic engines (PureTech, BlueHDi 1.5). Two hiding modes:
+
+- **Grey-out mode** — listings are dimmed, grayscaled, and struck through; still visible but clearly marked
+- **Hide completely** — listings are fully removed and replaced by a slim placeholder bar showing the vehicle title; clicking the bar reveals the listing in a faded "reviewed" state with a re-hide button
 
 ### Supported websites
 
@@ -27,6 +30,8 @@ HidePuretech is a browser extension that visually disables car listings on suppo
 
 - Toggle filtering per website (on/off)
 - Toggle filtering per motor type independently (PureTech, BlueHDi 1.5)
+- **Hide completely** — remove listings entirely and show a placeholder (default: on)
+- **Show placeholder icon** — display the extension icon inside the placeholder bar
 
 ---
 
@@ -49,15 +54,15 @@ npm install
 
 ### Dev commands
 
-| Command           | Description                                   |
-| ----------------- | --------------------------------------------- |
-| `npm run dev`     | Chrome dev mode — Vite with HMR on port 5173  |
-| `npm run dev:ff`  | Firefox dev mode — Launches Firefox with auto-reload |
-| `npm run watch`   | Watch build → updates `dist/` on every save   |
-| `npm run build`   | TypeScript check + Vite build → `dist/`       |
-| `npm run lint`    | ESLint (TypeScript + React rules)             |
-| `npm run deploy`  | Build + zip → `hide-puretech.zip`             |
-| `npm run release` | Bump version, build, zip, push GitHub release |
+| Command            | Description                                                      |
+| ------------------ | ---------------------------------------------------------------- |
+| `npm run dev`      | Chrome dev mode — Vite with HMR on port 5173                     |
+| `npm run start:ff` | Firefox dev mode — watch build + auto-launch Firefox with reload |
+| `npm run watch`    | Watch build → updates `dist/` on every save (no browser launch)  |
+| `npm run build`    | TypeScript check + Vite build → `dist/`                          |
+| `npm run lint`     | ESLint (TypeScript + React rules)                                |
+| `npm run deploy`   | Build + zip → `hide-puretech.zip`                                |
+| `npm run release`  | Bump version, build, zip, push GitHub release                    |
 
 ### Architecture
 
@@ -86,10 +91,12 @@ The popup communicates with live tabs via `browser.tabs.sendMessage`. The conten
     pattern: string;
   }
   [];
+  hideCompletely: boolean; // default: true
+  showPlaceholderIcon: boolean; // default: false
 }
 ```
 
-Both keys are initialised on first load from `src/store/initialState.ts` if missing. `pattern` is a regex string compiled at runtime with flag `i`.
+All keys are initialised on first load from `src/store/initialState.ts` if missing. `pattern` is a case-insensitive regex string compiled at runtime.
 
 Default motors:
 
@@ -98,18 +105,21 @@ Default motors:
 
 ### How filtering works
 
-1. On page load, the content script reads `websites` and `motors` from storage
+1. On page load, the content script reads all storage keys and uses `initialState.ts` defaults for any that are missing
 2. If the current URL matches an active website, active motor patterns are compiled into regexes
-3. All `<a>` elements (or vendor-specific selectors) are scanned — if any child `div` text matches a regex, the listing's parent card gets `.hp-disabled`
-4. `.hp-disabled` applies: `opacity: 0.35`, `filter: grayscale(100%)`, `pointer-events: none`, `text-decoration: line-through` on children
-5. Toggling from the popup sends a message with the full `websites` + `motors` state; the content script re-runs the filter
+3. Vendor-specific selectors (from `src/utils/vendors/vendorManager.ts`) identify listing card containers; each card's full text + ARIA attributes are tested against the regexes
+4. Matched cards either get `.hp-disabled` (grey-out) or `.hp-hide-completely` + a placeholder bar (hide mode), depending on the `hideCompletely` setting
+5. Clicking a placeholder sets `data-hp-user-show="true"` on the card — it reappears dimmed with a "Re-hide" button overlay
+6. The popup sends partial state updates via `browser.tabs.sendMessage`; the content script also stays in sync via `browser.storage.onChanged` for cross-tab reactivity
+7. A debounced `MutationObserver` re-runs filtering automatically when the page DOM changes (e.g. infinite scroll)
 
 ### Adding a new supported website
 
 1. Add a URL pattern to `manifest.json` → `content_scripts[].matches`
 2. Add the site entry to `src/store/initialState.ts` → `websites[]`
 3. Add the vendor enum value to `src/types/vendors.ts` → `Vendors`
-4. Add a `case` in the `Vendor` constructor in `src/utils/motorHiddingMethods.ts` with the correct `parentClasses` (CSS classes of the listing card container) and optionally `adClasses` (CSS classes of the `<a>` link element if vendor-specific querying is needed)
+4. Add a `case` in the `Vendor` constructor in `src/utils/vendors/vendorManager.ts` with `parentClasses` (card container selectors), optionally `adClasses` (link/anchor selectors), and `titleSelector` (used to extract the vehicle title for the placeholder label)
+5. Add the URL substring check to `getVendorFromUrl()` in the same file
 
 ### Adding a new motor filter
 
@@ -139,9 +149,7 @@ pattern: "(?=.*word1)(?=.*word2)";
 
 ### Load the unpacked extension (Firefox)
 
-1. In one terminal, run `npm run watch` to automatically rebuild the extension on changes.
-2. In a second terminal, run `npm run dev:ff`.
-3. Firefox will launch automatically with the extension loaded and will auto-reload whenever `dist/` is updated.
+Run `npm run start:ff` — this concurrently starts the watch build and launches Firefox with the extension auto-loaded and auto-reloaded on every `dist/` change.
 
 ### Inspect the popup
 
@@ -150,13 +158,7 @@ pattern: "(?=.*word1)(?=.*word2)";
 
 ### Inspect the content script
 
-Open DevTools on any supported site (F12) → **Console** tab. The content script logs to the page's console, not the extension's background console.
-
-Look for:
-
-```
-🚀 ~ toggleAd ~ carAdsWithLinks: NodeList [...]
-```
+Open DevTools on any supported site (F12) → **Console** tab. The content script runs in the page context, not the extension background.
 
 ### Inspect storage
 
@@ -176,18 +178,12 @@ Then reload the page — defaults from `initialState.ts` will be written on next
 
 ### Common issues
 
-| Symptom                                                | Likely cause                                           | Fix                                                               |
-| ------------------------------------------------------ | ------------------------------------------------------ | ----------------------------------------------------------------- |
-| Nothing is hidden on a supported site                  | Website toggle is off, or no motors are active         | Open popup, check toggles                                         |
-| Extension not reacting after code change               | `dist/` not rebuilt                                    | Run `npm run build`, then refresh extension                       |
-| `Could not resolve "../types/vendors"` build error     | `vendors.ts` missing or renamed to `.d.ts`             | Ensure file is `src/types/vendors.ts` (not `.d.ts`)               |
-| Storage shows old motor list after adding a new motor  | Storage was already initialised                        | Run `chrome.storage.sync.clear()` in popup inspector, then reload |
-| Listings re-enable on motor toggle but not site toggle | Expected — site toggle also sends current motors state | No action needed                                                  |
+| Symptom                                                | Likely cause                                           | Fix                                                                          |
+| ------------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| Nothing is hidden on a supported site                  | Website toggle is off, or no motors are active         | Open popup, check toggles                                                    |
+| Extension not reacting after code change               | `dist/` not rebuilt                                    | Run `npm run build`, then refresh extension                                  |
+| `Could not resolve` vendor import error                | `vendors.ts` missing or path wrong                     | Ensure `src/types/vendors.ts` and `src/utils/vendors/vendorManager.ts` exist |
+| Storage shows old motor list after adding a new motor  | Storage was already initialised                        | Run `chrome.storage.sync.clear()` in popup inspector, then reload            |
+| Listings re-enable on motor toggle but not site toggle | Expected — site toggle also sends current motors state | No action needed                                                             |
 
 ---
-
-### Roadmap
-
-- [ ] Add support for more languages
-- [ ] Add support for more engines
-- [ ] i18n the "Motors" section label in the popup

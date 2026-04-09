@@ -2,11 +2,15 @@
   "add": { "message": "Ajouter un moteur a masquer" },
   "brand": { "message": "Hide Puretech" },
   "extensionName": { "message": "Hide Puretech" },
-  "extensionDescription": { "message": "Masquer les moteurs Puretech des annonces automobiles sur La Centrale, AramisAuto, Autosphere et LeBonCoin" },
+  "extensionDescription": {
+    "message": "Masquer les moteurs Puretech des annonces automobiles sur La Centrale, AramisAuto, Autosphere et LeBonCoin"
+  },
   "settings": { "message": "Paramètres" },
   "instructions": {
     "message": "Activer sur ces sites"
   },
   "motors": { "message": "Moteurs" },
-  "support": { "message": "Nous soutenir" }
+  "support": { "message": "Nous soutenir" },
+  "hideCompletely": { "message": "Masquer complètement" },
+  "showPlaceholderIcon": { "message": "Afficher une icône à côté des annonces" }
 }

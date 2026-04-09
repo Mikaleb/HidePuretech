@@ -14,6 +14,9 @@ import { initialState } from "./store/initialState";
 
 import { WebsiteList } from "./components/WebsiteList";
 import { MotorList } from "./components/MotorList";
+import Paper from "@mui/material/Paper";
+import Switch from "@mui/material/Switch";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 declare const browser: any;
 
@@ -30,7 +33,27 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.getStateFromKey("websites");
     this.getStateFromKey("newMotor");
     this.getStateFromKey("motors");
+    this.getStateFromKey("hideCompletely");
+    this.getStateFromKey("showPlaceholderIcon");
   }
+
+  toggleHideCompletely = () => {
+    this.setState((prevState) => {
+      const hideCompletely = !prevState.hideCompletely;
+      chrome.storage.sync.set({ hideCompletely });
+      this.sendMessageToContentScript({ hideCompletely });
+      return { hideCompletely } as AppState & { customMotorInput: string };
+    });
+  };
+
+  toggleShowPlaceholderIcon = () => {
+    this.setState((prevState) => {
+      const showPlaceholderIcon = !prevState.showPlaceholderIcon;
+      chrome.storage.sync.set({ showPlaceholderIcon });
+      this.sendMessageToContentScript({ showPlaceholderIcon });
+      return { showPlaceholderIcon } as AppState & { customMotorInput: string };
+    });
+  };
 
   sendMessageToContentScript = async (newState: Partial<AppState>) => {
     // send it to each tabs that match the content_scripts, and active (no need to wake up sleeping tabs)
@@ -52,7 +75,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.setState((prevState) => {
       const updatedSite = { ...site, active: !site.active };
       const websites = prevState.websites.map((website) =>
-        website.title === site.title ? updatedSite : website
+        website.title === site.title ? updatedSite : website,
       );
 
       chrome.storage.sync.set({ websites });
@@ -68,7 +91,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
   toggleMotorStatus = (motor: AppState["motors"][0]) => {
     this.setState((prevState) => {
       const motors = prevState.motors.map((m) =>
-        m.title === motor.title ? { ...m, active: !m.active } : m
+        m.title === motor.title ? { ...m, active: !m.active } : m,
       );
       chrome.storage.sync.set({ motors });
       this.sendMessageToContentScript({ motors, websites: prevState.websites });
@@ -88,21 +111,29 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
   handleAddMotor = () => {
     const title = this.state.customMotorInput.trim();
     if (!title) return;
-    
+
     this.setState((prevState) => {
-      if (prevState.motors.some(m => m.title.toLowerCase() === title.toLowerCase())) {
-        return { customMotorInput: "" } as AppState & { customMotorInput: string };
+      if (
+        prevState.motors.some(
+          (m) => m.title.toLowerCase() === title.toLowerCase(),
+        )
+      ) {
+        return { customMotorInput: "" } as AppState & {
+          customMotorInput: string;
+        };
       }
       const newMotor = {
         title,
         active: true,
-        pattern: title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'),
+        pattern: title.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&"),
         isCustom: true,
       };
       const motors = [...prevState.motors, newMotor];
       chrome.storage.sync.set({ motors });
       this.sendMessageToContentScript({ motors, websites: prevState.websites });
-      return { motors, customMotorInput: "" } as AppState & { customMotorInput: string };
+      return { motors, customMotorInput: "" } as AppState & {
+        customMotorInput: string;
+      };
     });
   };
 
@@ -118,16 +149,75 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
 
   render() {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
-        <Box sx={{ px: 2, pt: 3, pb: 1, textAlign: 'center' }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          bgcolor: "background.default",
+        }}
+      >
+        <Box sx={{ px: 2, pt: 3, pb: 1, textAlign: "center" }}>
           <Typography
             variant="h5"
             className="title"
             color="text.primary"
             sx={{ fontWeight: "bold", mb: 0 }}
           >
-            {browser.i18n.getMessage("brand")}
+            Hide Puretech
           </Typography>
+        </Box>
+
+        <Box sx={{ px: 2, pb: 1 }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 1.5,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+            }}
+          >
+            <VisibilityOffIcon color="primary" fontSize="small" />
+            <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: 500 }}>
+              {browser.i18n.getMessage("hideCompletely")}
+            </Typography>
+            <Switch
+              size="small"
+              checked={this.state.hideCompletely}
+              onChange={this.toggleHideCompletely}
+            />
+          </Paper>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 1.5,
+              mt: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+            }}
+          >
+            <img
+              src="public/favicon-16x16.png"
+              style={{ width: 16, height: 16, opacity: 0.7 }}
+              alt=""
+            />
+            <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: 500 }}>
+              {browser.i18n.getMessage("showPlaceholderIcon")}
+            </Typography>
+            <Switch
+              size="small"
+              checked={this.state.showPlaceholderIcon}
+              onChange={this.toggleShowPlaceholderIcon}
+            />
+          </Paper>
         </Box>
 
         <MotorList
@@ -146,7 +236,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
           onToggle={this.toggleWebsiteStatus}
         />
 
-        <Box sx={{ mt: 'auto' }}>
+        <Box sx={{ mt: "auto" }}>
           <FooterApp />
         </Box>
       </Box>
