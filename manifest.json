@@ -6,22 +6,17 @@
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": [
-    "storage",
-    "tabs"
-  ],
+  "permissions": ["storage", "tabs"],
   "default_locale": "en",
   "icons": {
-    "16": "public/icon16.png",
-    "32": "public/icon32.png",
-    "48": "public/icon48.png",
-    "128": "public/icon128.png"
+    "16": "public/favicon-16x16.png",
+    "32": "public/favicon-32x32.png",
+    "96": "public/favicon-96x96.png",
+    "128": "public/favicon-128.png"
   },
   "content_scripts": [
     {
-      "js": [
-        "src/content.tsx"
-      ],
+      "js": ["src/content.tsx"],
       "matches": [
         "https://*.lacentrale.fr/*",
         "https://*.aramisauto.com/*",
@@ -39,15 +34,13 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "public/icon16.png",
-        "public/icon32.png",
-        "public/icon48.png",
-        "public/icon128.png",
-        "icon16.png"
+        "public/favicon-16x16.png",
+        "public/favicon-32x32.png",
+        "public/favicon-96x96.png",
+        "public/favicon-128.png",
+        "favicon-16x16.png"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
   ]
 }

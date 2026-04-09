@@ -1,23 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 @import url("./assets/palette.css");
 
-@font-face {
-  font-family: "Neogrey";
-  font-style: normal;
-  font-weight: normal;
-  src: local("Neogrey"),
-    url("./fonts/Neogrey/NeogreyRegular.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Neogrey Medium";
-  font-style: normal;
-  font-weight: normal;
-  src: local("Neogrey Medium"),
-    url("./fonts/Neogrey/NeogreyMedium.woff") format("woff");
-}
-
 .title {
-  font-family: "Neogrey", sans-serif !important;
+  font-family: "Audiowide", cursive !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  .brand-hide {
+    position: relative;
+    color: inherit;
+    display: inline-block;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -5%;
+      width: 110%;
+      height: 4px;
+      background-color: var(--vermilion); /* Use color from palette.css */
+      transform: translateY(-50%) rotate(-12deg);
+      border-radius: 2px;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+  }
 }
 
 #root {

@@ -45,7 +45,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
       return { hideCompletely } as AppState & { customMotorInput: string };
     });
   };
-  
+
   toggleShowPlaceholderIcon = () => {
     this.setState((prevState) => {
       const showPlaceholderIcon = !prevState.showPlaceholderIcon;
@@ -75,7 +75,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.setState((prevState) => {
       const updatedSite = { ...site, active: !site.active };
       const websites = prevState.websites.map((website) =>
-        website.title === site.title ? updatedSite : website
+        website.title === site.title ? updatedSite : website,
       );
 
       chrome.storage.sync.set({ websites });
@@ -91,7 +91,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
   toggleMotorStatus = (motor: AppState["motors"][0]) => {
     this.setState((prevState) => {
       const motors = prevState.motors.map((m) =>
-        m.title === motor.title ? { ...m, active: !m.active } : m
+        m.title === motor.title ? { ...m, active: !m.active } : m,
       );
       chrome.storage.sync.set({ motors });
       this.sendMessageToContentScript({ motors, websites: prevState.websites });
@@ -111,21 +111,29 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
   handleAddMotor = () => {
     const title = this.state.customMotorInput.trim();
     if (!title) return;
-    
+
     this.setState((prevState) => {
-      if (prevState.motors.some(m => m.title.toLowerCase() === title.toLowerCase())) {
-        return { customMotorInput: "" } as AppState & { customMotorInput: string };
+      if (
+        prevState.motors.some(
+          (m) => m.title.toLowerCase() === title.toLowerCase(),
+        )
+      ) {
+        return { customMotorInput: "" } as AppState & {
+          customMotorInput: string;
+        };
       }
       const newMotor = {
         title,
         active: true,
-        pattern: title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'),
+        pattern: title.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&"),
         isCustom: true,
       };
       const motors = [...prevState.motors, newMotor];
       chrome.storage.sync.set({ motors });
       this.sendMessageToContentScript({ motors, websites: prevState.websites });
-      return { motors, customMotorInput: "" } as AppState & { customMotorInput: string };
+      return { motors, customMotorInput: "" } as AppState & {
+        customMotorInput: string;
+      };
     });
   };
 
@@ -141,29 +149,36 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
 
   render() {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
-        <Box sx={{ px: 2, pt: 3, pb: 1, textAlign: 'center' }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          bgcolor: "background.default",
+        }}
+      >
+        <Box sx={{ px: 2, pt: 3, pb: 1, textAlign: "center" }}>
           <Typography
             variant="h5"
             className="title"
             color="text.primary"
             sx={{ fontWeight: "bold", mb: 0 }}
           >
-            {browser.i18n.getMessage("brand")}
+            Hide Puretech
           </Typography>
         </Box>
 
         <Box sx={{ px: 2, pb: 1 }}>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: 1.5, 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 2, 
-              border: '1px solid', 
-              borderColor: 'divider',
-              bgcolor: 'background.paper',
+          <Paper
+            elevation={0}
+            sx={{
+              p: 1.5,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
             }}
           >
             <VisibilityOffIcon color="primary" fontSize="small" />
@@ -176,22 +191,24 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
               onChange={this.toggleHideCompletely}
             />
           </Paper>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: 1.5, 
+          <Paper
+            elevation={0}
+            sx={{
+              p: 1.5,
               mt: 1,
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 2, 
-              border: '1px solid', 
-              borderColor: 'divider',
-              bgcolor: 'background.paper',
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
             }}
           >
-            <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-               <img src="public/icon16.png" style={{ width: 14, height: 14, opacity: 0.7 }} alt="" />
-            </Box>
+            <img
+              src="public/favicon-16x16.png"
+              style={{ width: 16, height: 16, opacity: 0.7 }}
+              alt=""
+            />
             <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: 500 }}>
               {browser.i18n.getMessage("showPlaceholderIcon")}
             </Typography>
@@ -219,7 +236,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
           onToggle={this.toggleWebsiteStatus}
         />
 
-        <Box sx={{ mt: 'auto' }}>
+        <Box sx={{ mt: "auto" }}>
           <FooterApp />
         </Box>
       </Box>

@@ -2,12 +2,15 @@
   "add": { "message": "Add a motor to hide" },
   "brand": { "message": "Hide Puretech" },
   "extensionName": { "message": "Hide Puretech" },
-  "extensionDescription": { "message": "Hide Puretech motors from car listing on La Centrale, AramisAuto, Autosphere and LeBonCoin" },
+  "extensionDescription": {
+    "message": "Hide Puretech motors from car listing on La Centrale, AramisAuto, Autosphere and LeBonCoin"
+  },
   "settings": { "message": "Settings" },
   "instructions": {
     "message": "Enable on these websites"
   },
   "motors": { "message": "Motors" },
   "support": { "message": "Support" },
-  "hideCompletely": { "message": "Hide completely" }
+  "hideCompletely": { "message": "Hide completely" },
+  "showPlaceholderIcon": { "message": "Show icon next to ads" }
 }

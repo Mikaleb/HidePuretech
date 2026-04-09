@@ -7,8 +7,7 @@ import { ThemeProvider, createTheme, ThemeOptions } from "@mui/material/styles";
 import "./index.css";
 import App from "./App.tsx";
 
-import NeogreyMedium from "./fonts/Neogrey/NeogreyMedium.woff";
-import NeogreyRegular from "./fonts/Neogrey/NeogreyRegular.woff";
+
 
 const rootContainer = document.getElementById("root") as HTMLElement;
 
@@ -16,16 +15,16 @@ const getDesignTokens = (mode: "light" | "dark"): ThemeOptions => ({
   palette: {
     mode,
     primary: {
-      main: "#f24535", // Brand red from puretech context
+      main: "#f24535", // Brand red from vermilion in palette.css
     },
     background: {
       default: mode === "dark" ? "#0d0d0d" : "#f0f2f5",
-      paper: mode === "dark" ? "#1b2021" : "#ffffff",
+      paper: mode === "dark" ? "#1b2021" : "#ffffff", // Eerie black from palette.css
     },
   },
   typography: {
-    h4: { fontFamily: '"Neogrey", sans-serif' },
-    h5: { fontFamily: '"Neogrey", sans-serif' },
+    h4: { fontFamily: '"Audiowide", cursive' },
+    h5: { fontFamily: '"Audiowide", cursive' },
     subtitle2: { fontWeight: 600, opacity: 0.8 },
   },
   shape: {
@@ -34,18 +33,7 @@ const getDesignTokens = (mode: "light" | "dark"): ThemeOptions => ({
   components: {
     MuiCssBaseline: {
       styleOverrides: `
-        @font-face {
-          font-family: 'Neogrey';
-          font-style: normal;
-          font-weight: normal;
-          src: local('Neogrey'), url(${NeogreyRegular}) format('woff');
-        }
-        @font-face {
-          font-family: 'Neogrey Medium';
-          font-style: normal;
-          font-weight: normal;
-          src: local('Neogrey Medium'), url(${NeogreyMedium}) format('woff');
-        }
+
         body {
           margin: 0;
           box-sizing: border-box;
@@ -70,7 +58,7 @@ const getDesignTokens = (mode: "light" | "dark"): ThemeOptions => ({
             transform: 'translateX(16px)',
             color: '#fff',
             '& + .MuiSwitch-track': {
-              backgroundColor: '#f24535',
+              backgroundColor: '#f24535', // Match brand red
               opacity: 1,
               border: 0,
             },
