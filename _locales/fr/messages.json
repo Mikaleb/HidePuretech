@@ -8,5 +8,6 @@
     "message": "Activer sur ces sites"
   },
   "motors": { "message": "Moteurs" },
-  "support": { "message": "Nous soutenir" }
+  "support": { "message": "Nous soutenir" },
+  "hideCompletely": { "message": "Masquer complètement" }
 }

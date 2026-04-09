@@ -8,5 +8,6 @@
     "message": "Enable on these websites"
   },
   "motors": { "message": "Motors" },
-  "support": { "message": "Support" }
+  "support": { "message": "Support" },
+  "hideCompletely": { "message": "Hide completely" }
 }

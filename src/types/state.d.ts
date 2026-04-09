@@ -19,4 +19,5 @@ export type AppState = {
     url: string;
     active: boolean;
   }[];
+  hideCompletely: boolean;
 };

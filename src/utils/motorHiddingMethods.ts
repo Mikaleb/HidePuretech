@@ -4,19 +4,32 @@ import { Motor } from "../types/state";
 const HP_CLASS = "hp-disabled";
 const HP_SPINNER_ID = "hp-loading-spinner";
 
-function injectStyle() {
-  if (document.getElementById("hp-style")) return;
+function injectStyle(hideCompletely: boolean) {
+  if (document.getElementById("hp-style")) {
+    const existingStyle = document.getElementById("hp-style");
+    if (existingStyle) existingStyle.remove();
+  }
   const style = document.createElement("style");
   style.id = "hp-style";
-  style.textContent = `
-    .${HP_CLASS}, [data-hp-disabled="true"] {
-      opacity: 0.35 !important;
-      filter: grayscale(100%) !important;
-      pointer-events: none !important;
-    }
-    .${HP_CLASS} *, [data-hp-disabled="true"] * {
-      text-decoration: line-through !important;
-    }
+  if (hideCompletely) {
+    style.textContent = `
+      .${HP_CLASS}, [data-hp-disabled="true"] {
+        display: none !important;
+      }
+    `;
+  } else {
+    style.textContent = `
+      .${HP_CLASS}, [data-hp-disabled="true"] {
+        opacity: 0.35 !important;
+        filter: grayscale(100%) !important;
+        pointer-events: none !important;
+      }
+      .${HP_CLASS} *, [data-hp-disabled="true"] * {
+        text-decoration: line-through !important;
+      }
+    `;
+  }
+  style.textContent += `
     #${HP_SPINNER_ID} {
       position: fixed;
       bottom: 20px;
@@ -141,9 +154,9 @@ let activeJobToken = 0;
  * Toggle visibility of car ads matching any active motor pattern.
  * Processes elements in batches to avoid blocking the main thread.
  */
-export async function toggleAd(hide: boolean, activeMotors: Motor[]) {
+export async function toggleAd(hide: boolean, activeMotors: Motor[], hideCompletely: boolean) {
   const token = ++activeJobToken;
-  injectStyle();
+  injectStyle(hideCompletely);
   showSpinner();
 
   const regexes = activeMotors.map((m) => new RegExp(m.pattern, "i"));

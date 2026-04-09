@@ -14,6 +14,9 @@ import { initialState } from "./store/initialState";
 
 import { WebsiteList } from "./components/WebsiteList";
 import { MotorList } from "./components/MotorList";
+import Paper from "@mui/material/Paper";
+import Switch from "@mui/material/Switch";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 declare const browser: any;
 
@@ -30,7 +33,17 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.getStateFromKey("websites");
     this.getStateFromKey("newMotor");
     this.getStateFromKey("motors");
+    this.getStateFromKey("hideCompletely");
   }
+
+  toggleHideCompletely = () => {
+    this.setState((prevState) => {
+      const hideCompletely = !prevState.hideCompletely;
+      chrome.storage.sync.set({ hideCompletely });
+      this.sendMessageToContentScript({ hideCompletely });
+      return { hideCompletely } as AppState & { customMotorInput: string };
+    });
+  };
 
   sendMessageToContentScript = async (newState: Partial<AppState>) => {
     // send it to each tabs that match the content_scripts, and active (no need to wake up sleeping tabs)
@@ -128,6 +141,31 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
           >
             {browser.i18n.getMessage("brand")}
           </Typography>
+        </Box>
+
+        <Box sx={{ px: 2, pb: 1 }}>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 1.5, 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 2, 
+              border: '1px solid', 
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+            }}
+          >
+            <VisibilityOffIcon color="primary" fontSize="small" />
+            <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: 500 }}>
+              {browser.i18n.getMessage("hideCompletely")}
+            </Typography>
+            <Switch
+              size="small"
+              checked={this.state.hideCompletely}
+              onChange={this.toggleHideCompletely}
+            />
+          </Paper>
         </Box>
 
         <MotorList
