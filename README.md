@@ -154,4 +154,10 @@ chrome.storage.sync.clear();
 
 ## License
 
-MIT
+This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
+
+> [!IMPORTANT]
+> **Commercial use is strictly prohibited without prior written permission from the author.** 
+> This includes using this code in any project intended for commercial advantage or monetary compensation.
+
+For more details, see the [LICENSE](LICENSE) file.
