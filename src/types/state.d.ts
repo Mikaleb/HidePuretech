@@ -1,12 +1,19 @@
+export type Motor = {
+  title: string;
+  active: boolean;
+  pattern: string;
+  isCustom?: boolean;
+};
+
 export type AppState = {
   loading: boolean;
-  newMotor?: { title: string };
+  newMotor?: Partial<Motor>;
   newWebsite?: {
     title: string;
     url: string;
     active: boolean;
   };
-  motors: any[];
+  motors: Motor[];
   websites: {
     title: string;
     url: string;
