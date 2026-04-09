@@ -1,9 +1,9 @@
 {
   "add": { "message": "Ajouter un moteur a masquer" },
-  "brand": { "message": "Hide Puretech" },
-  "extensionName": { "message": "Hide Puretech" },
+  "brand": { "message": "Le Cache Misère (LCM)" },
+  "extensionName": { "message": "Le Cache Misère (LCM)" },
   "extensionDescription": {
-    "message": "Masquer les moteurs problématiques (Puretech, THP, BlueHDi) des annonces automobiles sur La Centrale, AramisAuto, Autosphere, AutoScout24 et LeBonCoin"
+    "message": "Masquez et basculez les annonces avec des moteurs peu fiables (Puretech, THP, BlueHDi, etc.)"
   },
   "settings": { "message": "Paramètres" },
   "instructions": {
@@ -13,5 +13,6 @@
   "support": { "message": "Nous soutenir" },
   "hideCompletely": { "message": "Masquer complètement" },
   "showPlaceholderIcon": { "message": "Afficher une icône à côté des annonces" },
-  "adsHiddenOnThisPage": { "message": "annonces masquées sur cette page" }
+  "adsHiddenOnThisPage": { "message": "annonces masquées sur cette page" },
+  "showBadgeCount": { "message": "Afficher le nombre sur l'icône" }
 }

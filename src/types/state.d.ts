@@ -21,5 +21,6 @@ export type AppState = {
   }[];
   hideCompletely: boolean;
   showPlaceholderIcon: boolean;
+  showBadgeCount: boolean;
   currentTabHiddenCount?: number;
 };

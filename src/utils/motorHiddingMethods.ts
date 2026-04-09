@@ -1,9 +1,9 @@
 import { Motor } from "../types/state";
 import {
-  HP_CLASS,
-  HP_HIDE_CLASS,
-  HP_PLACEHOLDER_CLASS,
-  HP_REHIDE_BTN_CLASS,
+  LCM_CLASS,
+  LCM_HIDE_CLASS,
+  LCM_PLACEHOLDER_CLASS,
+  LCM_REHIDE_BTN_CLASS,
 } from "./constants";
 import { injectStyle, showSpinner, hideSpinner } from "./domUtils";
 import {
@@ -25,38 +25,38 @@ function disableElement(
   // If we are NOT in hideCompletely mode anymore, ensure any leftover placeholders are removed
   if (!hideCompletely) {
     if (
-      parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)
+      parent.previousElementSibling?.classList.contains(LCM_PLACEHOLDER_CLASS)
     ) {
       parent.previousElementSibling.remove();
     }
     // Also remove re-hide button if switching back to grey-out mode
-    const rehideBtn = parent.querySelector(`.${HP_REHIDE_BTN_CLASS}`);
+    const rehideBtn = parent.querySelector(`.${LCM_REHIDE_BTN_CLASS}`);
     if (rehideBtn) rehideBtn.remove();
   }
 
   // Check if the user has already expanded this ad
-  if (parent.getAttribute("data-hp-user-show") === "true") {
-    parent.classList.add(HP_CLASS); // Still keep it greyed out
-    parent.classList.remove(HP_HIDE_CLASS); // Remove hiding
-    parent.setAttribute("data-hp-disabled", "true");
+  if (parent.getAttribute("data-lcm-user-show") === "true") {
+    parent.classList.add(LCM_CLASS); // Still keep it greyed out
+    parent.classList.remove(LCM_HIDE_CLASS); // Remove hiding
+    parent.setAttribute("data-lcm-disabled", "true");
 
     // Ensure placeholder is gone if it somehow stayed
     if (
-      parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)
+      parent.previousElementSibling?.classList.contains(LCM_PLACEHOLDER_CLASS)
     ) {
       parent.previousElementSibling.remove();
     }
 
     // Inject "Re-hide" button if not present
-    if (!parent.querySelector(`.${HP_REHIDE_BTN_CLASS}`)) {
+    if (!parent.querySelector(`.${LCM_REHIDE_BTN_CLASS}`)) {
       const rehideBtn = document.createElement("button");
-      rehideBtn.className = HP_REHIDE_BTN_CLASS;
+      rehideBtn.className = LCM_REHIDE_BTN_CLASS;
       rehideBtn.textContent = "Hide ad";
       rehideBtn.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        parent.removeAttribute("data-hp-user-show");
-        parent.classList.add(HP_HIDE_CLASS);
+        parent.removeAttribute("data-lcm-user-show");
+        parent.classList.add(LCM_HIDE_CLASS);
         // Force a re-run of disable logic to recreate placeholder
         disableElement(vendor, element, hideCompletely, showPlaceholderIcon);
       };
@@ -65,21 +65,21 @@ function disableElement(
     return;
   }
 
-  element.classList.add(HP_CLASS);
-  element.setAttribute("data-hp-disabled", "true");
+  element.classList.add(LCM_CLASS);
+  element.setAttribute("data-lcm-disabled", "true");
 
-  parent.classList.add(HP_CLASS);
-  parent.setAttribute("data-hp-disabled", "true");
+  parent.classList.add(LCM_CLASS);
+  parent.setAttribute("data-lcm-disabled", "true");
 
   if (hideCompletely) {
-    parent.classList.add(HP_HIDE_CLASS);
+    parent.classList.add(LCM_HIDE_CLASS);
 
     // Create placeholder if it doesn't exist
     if (
-      !parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)
+      !parent.previousElementSibling?.classList.contains(LCM_PLACEHOLDER_CLASS)
     ) {
       const placeholder = document.createElement("div");
-      placeholder.className = HP_PLACEHOLDER_CLASS;
+      placeholder.className = LCM_PLACEHOLDER_CLASS;
 
       const iconUrl =
         typeof chrome !== "undefined" && chrome.runtime
@@ -95,7 +95,7 @@ function disableElement(
         }
       }
 
-      const motorName = parent.getAttribute("data-hp-motor") || "";
+      const motorName = parent.getAttribute("data-lcm-motor") || "";
       const displayTitle =
         adTitle !== "Vehicle"
           ? `${adTitle}${motorName ? ` (${motorName})` : ""}`
@@ -104,14 +104,14 @@ function disableElement(
       placeholder.innerHTML = `
         ${showPlaceholderIcon ? `<img src="${iconUrl}" alt="icon">` : ""}
         <span>${displayTitle}</span>
-        <div class="hp-placeholder-line"></div>
-        <div class="hp-placeholder-btn">Show</div>
+        <div class="lcm-placeholder-line"></div>
+        <div class="lcm-placeholder-btn">Show</div>
       `;
 
       placeholder.onclick = (e) => {
         e.stopPropagation();
-        parent.setAttribute("data-hp-user-show", "true");
-        parent.classList.remove(HP_HIDE_CLASS);
+        parent.setAttribute("data-lcm-user-show", "true");
+        parent.classList.remove(LCM_HIDE_CLASS);
         placeholder.remove();
       };
 
@@ -121,23 +121,23 @@ function disableElement(
 }
 
 function enableElement(vendor: Vendor, element: HTMLElement) {
-  element.classList.remove(HP_CLASS);
-  element.removeAttribute("data-hp-disabled");
-  element.removeAttribute("data-hp-user-show");
+  element.classList.remove(LCM_CLASS);
+  element.removeAttribute("data-lcm-disabled");
+  element.removeAttribute("data-lcm-user-show");
 
   const parent = getParentCard(vendor, element) || element;
-  parent.classList.remove(HP_CLASS);
-  parent.classList.remove(HP_HIDE_CLASS);
-  parent.removeAttribute("data-hp-disabled");
-  parent.removeAttribute("data-hp-user-show");
+  parent.classList.remove(LCM_CLASS);
+  parent.classList.remove(LCM_HIDE_CLASS);
+  parent.removeAttribute("data-lcm-disabled");
+  parent.removeAttribute("data-lcm-user-show");
 
   // Remove placeholder if it exists
-  if (parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)) {
+  if (parent.previousElementSibling?.classList.contains(LCM_PLACEHOLDER_CLASS)) {
     parent.previousElementSibling.remove();
   }
 
   // Remove "Re-hide" button if it exists
-  const rehideBtn = parent.querySelector(`.${HP_REHIDE_BTN_CLASS}`);
+  const rehideBtn = parent.querySelector(`.${LCM_REHIDE_BTN_CLASS}`);
   if (rehideBtn) {
     rehideBtn.remove();
   }
@@ -168,13 +168,13 @@ export async function toggleAd(
       lastShowPlaceholderIcon !== showPlaceholderIcon)
   ) {
     document
-      .querySelectorAll(`.${HP_PLACEHOLDER_CLASS}`)
+      .querySelectorAll(`.${LCM_PLACEHOLDER_CLASS}`)
       .forEach((p) => p.remove());
     // Also clear user-show attributes if we are switching modes to ensure a clean state
     if (lastHideCompletely !== hideCompletely) {
       document
-        .querySelectorAll("[data-hp-user-show]")
-        .forEach((el) => el.removeAttribute("data-hp-user-show"));
+        .querySelectorAll("[data-lcm-user-show]")
+        .forEach((el) => el.removeAttribute("data-lcm-user-show"));
     }
   }
   lastHideCompletely = hideCompletely;
@@ -246,7 +246,7 @@ export async function toggleAd(
           new RegExp(m.pattern, "i").test(fullText),
         );
         if (matchedMotor) {
-          parent.setAttribute("data-hp-motor", matchedMotor.title);
+          parent.setAttribute("data-lcm-motor", matchedMotor.title);
         }
         disableElement(vendor, parent, hideCompletely, showPlaceholderIcon);
       } else {

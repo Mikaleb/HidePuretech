@@ -1,6 +1,6 @@
-export const HP_CLASS = "hp-disabled";
-export const HP_SPINNER_ID = "hp-loading-spinner";
-export const HP_HIDE_CLASS = "hp-hide-completely";
-export const HP_PLACEHOLDER_CLASS = "hp-hidden-placeholder";
-export const HP_REHIDE_BTN_CLASS = "hp-rehide-btn";
-export const HP_STYLE_ID = "hp-style";
+export const LCM_CLASS = "lcm-disabled";
+export const LCM_SPINNER_ID = "lcm-loading-spinner";
+export const LCM_HIDE_CLASS = "lcm-hide-completely";
+export const LCM_PLACEHOLDER_CLASS = "lcm-hidden-placeholder";
+export const LCM_REHIDE_BTN_CLASS = "lcm-rehide-btn";
+export const LCM_STYLE_ID = "lcm-style";

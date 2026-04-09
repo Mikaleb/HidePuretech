@@ -1,20 +1,20 @@
 <p align="center"><img src="https://github.com/Mikaleb/HidePuretech/blob/main/public/favicon-128.png?raw=true" /></p>
 
-# Hide PureTech
+# Le Cache Misère (LCM)
 
 <div style="display: inline-flex;
   flex-wrap: wrap;gap: 0.2em;">
 
 <a href="https://github.com/Mikaleb/HidePuretech"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/Mikaleb/HidePuretech?style=flat-square&logo=github&logoColor=fff"></a>
-<a href="https://chrome.google.com/webstore/detail/hide-puretech/jphlfplfmjdbbjnegonboddmfgdkdkgi"><img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/jphlfplfmjdbbjnegonboddmfgdkdkgi?style=flat-square&logo=googlechrome&logoColor=fff&color=%234285F4"></a>
-<a href="https://addons.mozilla.org/fr/firefox/addon/hide-puretech/"><img alt="Mozilla Add-on Users" src="https://img.shields.io/amo/users/hide-puretech?style=flat-square&logo=firefox&logoColor=%23FF7139&color=%23FF7139"></a>
+<a href="https://chrome.google.com/webstore/detail/le-cache-misere/jphlfplfmjdbbjnegonboddmfgdkdkgi"><img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/jphlfplfmjdbbjnegonboddmfgdkdkgi?style=flat-square&logo=googlechrome&logoColor=fff&color=%234285F4"></a>
+<a href="https://addons.mozilla.org/fr/firefox/addon/le-cache-misere/"><img alt="Mozilla Add-on Users" src="https://img.shields.io/amo/users/le-cache-misere?style=flat-square&logo=firefox&logoColor=%23FF7139&color=%23FF7139"></a>
 ![Static Badge](https://img.shields.io/badge/opera-awaiting-F78C40?style=flat-square&logo=opera&logoColor=red)
 
 </div>
 
 ## Features
 
-HidePuretech is a browser extension that filters car listings on supported websites containing problematic engines (PureTech, BlueHDi 1.5). Two hiding modes:
+**Le Cache Misère (LCM)** is a browser extension that filters car listings on supported websites containing problematic engines (PureTech, BlueHDi 1.5, etc.). Two hiding modes:
 
 - **Grey-out mode** — listings are dimmed, grayscaled, and struck through; still visible but clearly marked
 - **Hide completely** — listings are fully removed and replaced by a slim placeholder bar showing the vehicle title; clicking the bar reveals the listing in a faded "reviewed" state with a re-hide button
@@ -29,7 +29,7 @@ HidePuretech is a browser extension that filters car listings on supported websi
 ### Settings
 
 - Toggle filtering per website (on/off)
-- Toggle filtering per motor type independently (PureTech, BlueHDi 1.5)
+- Toggle filtering per motor type independently (PureTech, BlueHDi 1.5, THP, etc.)
 - **Hide completely** — remove listings entirely and show a placeholder (default: on)
 - **Show placeholder icon** — display the extension icon inside the placeholder bar
 
@@ -37,7 +37,7 @@ HidePuretech is a browser extension that filters car listings on supported websi
 
 ## Architecture
 
-This is a **Manifest V3 browser extension** built with Vite + `@crxjs/vite-plugin`, React 18 (class components), MUI v6, and SCSS.
+This is a **Manifest V3 browser extension** built with Vite + `@crxjs/vite-plugin`, React 18, MUI v6, and SCSS.
 
 ## Development
 
@@ -61,17 +61,15 @@ npm install
 | `npm run watch`    | Watch build → updates `dist/` on every save (no browser launch)  |
 | `npm run build`    | TypeScript check + Vite build → `dist/`                          |
 | `npm run lint`     | ESLint (TypeScript + React rules)                                |
-| `npm run deploy`   | Build + zip → `hide-puretech.zip`                                |
+| `npm run deploy`   | Build + zip → `le-cache-misere.zip`                              |
 | `npm run release`  | Bump version, build, zip, push GitHub release                    |
 
-### Architecture
+### Contexts
 
-Two independent execution contexts:
-
-| Context            | Entry point                | Purpose                                                                                |
-| ------------------ | -------------------------- | -------------------------------------------------------------------------------------- |
-| **Popup**          | `src/main.tsx` → `App.tsx` | Settings UI — reads/writes `chrome.storage.sync`, sends messages to content scripts    |
-| **Content script** | `src/content.tsx`          | Runs on supported sites — applies/removes `.hp-disabled` CSS class on matched listings |
+| Context            | Entry point                | Purpose                                                                                  |
+| ------------------ | -------------------------- | ---------------------------------------------------------------------------------------- |
+| **Popup**          | `src/main.tsx` → `App.tsx` | Settings UI — reads/writes `chrome.storage.sync`, sends messages to content scripts      |
+| **Content script** | `src/content.tsx`          | Runs on supported sites — applies/removes `.lcm-disabled` CSS class on matched listings |
 
 The popup communicates with live tabs via `browser.tabs.sendMessage`. The content script also reads `browser.storage.sync` directly on page load for its initial state.
 
@@ -107,33 +105,11 @@ Default motors:
 
 1. On page load, the content script reads all storage keys and uses `initialState.ts` defaults for any that are missing
 2. If the current URL matches an active website, active motor patterns are compiled into regexes
-3. Vendor-specific selectors (from `src/utils/vendors/vendorManager.ts`) identify listing card containers; each card's full text + ARIA attributes are tested against the regexes
-4. Matched cards either get `.hp-disabled` (grey-out) or `.hp-hide-completely` + a placeholder bar (hide mode), depending on the `hideCompletely` setting
-5. Clicking a placeholder sets `data-hp-user-show="true"` on the card — it reappears dimmed with a "Re-hide" button overlay
+3. Vendor-specific selectors identify listing card containers; each card's full text + ARIA attributes are tested against the regexes
+4. Matched cards either get `.lcm-disabled` (grey-out) or `.lcm-hide-completely` + a placeholder bar (hide mode), depending on the `hideCompletely` setting
+5. Clicking a placeholder sets `data-lcm-user-show="true"` on the card — it reappears dimmed with a "Re-hide" button overlay
 6. The popup sends partial state updates via `browser.tabs.sendMessage`; the content script also stays in sync via `browser.storage.onChanged` for cross-tab reactivity
 7. A debounced `MutationObserver` re-runs filtering automatically when the page DOM changes (e.g. infinite scroll)
-
-### Adding a new supported website
-
-1. Add a URL pattern to `manifest.json` → `content_scripts[].matches`
-2. Add the site entry to `src/store/initialState.ts` → `websites[]`
-3. Add the vendor enum value to `src/types/vendors.ts` → `Vendors`
-4. Add a `case` in the `Vendor` constructor in `src/utils/vendors/vendorManager.ts` with `parentClasses` (card container selectors), optionally `adClasses` (link/anchor selectors), and `titleSelector` (used to extract the vehicle title for the placeholder label)
-5. Add the URL substring check to `getVendorFromUrl()` in the same file
-
-### Adding a new motor filter
-
-Add an entry to `src/store/initialState.ts` → `motors[]`:
-
-```ts
-{ title: "My Engine", active: true, pattern: "my.?engine|myengine" }
-```
-
-`pattern` is a case-insensitive regex. Use lookaheads for multi-word AND matching:
-
-```ts
-pattern: "(?=.*word1)(?=.*word2)";
-```
 
 ---
 
@@ -174,16 +150,8 @@ To reset storage to defaults:
 chrome.storage.sync.clear();
 ```
 
-Then reload the page — defaults from `initialState.ts` will be written on next load.
-
-### Common issues
-
-| Symptom                                                | Likely cause                                           | Fix                                                                          |
-| ------------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| Nothing is hidden on a supported site                  | Website toggle is off, or no motors are active         | Open popup, check toggles                                                    |
-| Extension not reacting after code change               | `dist/` not rebuilt                                    | Run `npm run build`, then refresh extension                                  |
-| `Could not resolve` vendor import error                | `vendors.ts` missing or path wrong                     | Ensure `src/types/vendors.ts` and `src/utils/vendors/vendorManager.ts` exist |
-| Storage shows old motor list after adding a new motor  | Storage was already initialised                        | Run `chrome.storage.sync.clear()` in popup inspector, then reload            |
-| Listings re-enable on motor toggle but not site toggle | Expected — site toggle also sends current motors state | No action needed                                                             |
-
 ---
+
+## License
+
+MIT

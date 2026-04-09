@@ -1,9 +1,9 @@
 {
   "add": { "message": "Add a motor to hide" },
-  "brand": { "message": "Hide Puretech" },
-  "extensionName": { "message": "Hide Puretech" },
+  "brand": { "message": "Le Cache Misère (LCM)" },
+  "extensionName": { "message": "Le Cache Misère (LCM)" },
   "extensionDescription": {
-    "message": "Hide problematic motors (PureTech, THP, BlueHDi) from car listings on La Centrale, AramisAuto, Autosphere, AutoScout24 and LeBonCoin"
+    "message": "Hide and toggle ads with unreliable motors on car listings (PureTech, THP, BlueHDi, etc.)"
   },
   "settings": { "message": "Settings" },
   "instructions": {
@@ -13,5 +13,6 @@
   "support": { "message": "Support" },
   "hideCompletely": { "message": "Hide completely" },
   "showPlaceholderIcon": { "message": "Show icon next to ads" },
-  "adsHiddenOnThisPage": { "message": "unreliable ads hidden on this page" }
+  "adsHiddenOnThisPage": { "message": "unreliable ads hidden on this page" },
+  "showBadgeCount": { "message": "Show number on icon" }
 }

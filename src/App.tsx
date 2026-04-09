@@ -35,6 +35,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.getStateFromKey("motors");
     this.getStateFromKey("hideCompletely");
     this.getStateFromKey("showPlaceholderIcon");
+    this.getStateFromKey("showBadgeCount");
   }
 
   componentDidMount() {
@@ -71,6 +72,15 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
       chrome.storage.sync.set({ showPlaceholderIcon });
       this.sendMessageToContentScript({ showPlaceholderIcon });
       return { showPlaceholderIcon } as AppState & { customMotorInput: string };
+    });
+  };
+ 
+  toggleShowBadgeCount = () => {
+    this.setState((prevState) => {
+      const showBadgeCount = !prevState.showBadgeCount;
+      chrome.storage.sync.set({ showBadgeCount });
+      this.sendMessageToContentScript({ showBadgeCount });
+      return { showBadgeCount } as AppState & { customMotorInput: string };
     });
   };
 
@@ -183,7 +193,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
             color="text.primary"
             sx={{ fontWeight: "bold", mb: 0 }}
           >
-            Hide Puretech
+            {browser.i18n.getMessage("brand")}
           </Typography>
           {this.state.currentTabHiddenCount !== undefined && this.state.currentTabHiddenCount > 0 && (
             <Box
@@ -254,6 +264,45 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
               size="small"
               checked={this.state.showPlaceholderIcon}
               onChange={this.toggleShowPlaceholderIcon}
+            />
+          </Paper>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 1.5,
+              mt: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Box
+              sx={{
+                width: 16,
+                height: 16,
+                borderRadius: "50%",
+                bgcolor: "error.main",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "white",
+                fontSize: 10,
+                fontWeight: "bold",
+                opacity: 0.7,
+              }}
+            >
+              1
+            </Box>
+            <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: 500 }}>
+              {browser.i18n.getMessage("showBadgeCount")}
+            </Typography>
+            <Switch
+              size="small"
+              checked={this.state.showBadgeCount}
+              onChange={this.toggleShowBadgeCount}
             />
           </Paper>
         </Box>

@@ -8,9 +8,9 @@ import path from 'path';
 export default defineConfig({
   plugins: [
     react(),
-    crx({ manifest }),
+    crx({ manifest: manifest as any }),
     {
-      name: "remove-use-dynamic-url",
+      name: "manifest-fixer",
       closeBundle() {
         const manifestPath = path.resolve(__dirname, "dist/manifest.json");
         if (fs.existsSync(manifestPath)) {
@@ -19,8 +19,13 @@ export default defineConfig({
             content.web_accessible_resources.forEach((resource: any) => {
               delete resource.use_dynamic_url;
             });
-            fs.writeFileSync(manifestPath, JSON.stringify(content, null, 2));
           }
+          // Firefox MV3 fix for background service workers
+          if (content.background && content.background.service_worker) {
+            content.background.scripts = [content.background.service_worker];
+            delete content.background.service_worker;
+          }
+          fs.writeFileSync(manifestPath, JSON.stringify(content, null, 2));
         }
       },
     },

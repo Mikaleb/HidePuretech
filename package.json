@@ -1,5 +1,5 @@
 {
-  "name": "hide-puretech",
+  "name": "le-cache-misere",
   "private": true,
   "version": "3.0.0",
   "type": "module",
@@ -17,7 +17,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "zip": "cd dist && zip -r ../hide-puretech.zip . -x '*.git*' && cd ..",
+    "zip": "cd dist && zip -r ../le-cache-misere.zip . -x '*.git*' && cd ..",
     "deploy": "npm run build && npm run zip",
     "release": "release-it"
   },
