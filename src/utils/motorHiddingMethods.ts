@@ -9,12 +9,12 @@ function injectStyle() {
   const style = document.createElement("style");
   style.id = "hp-style";
   style.textContent = `
-    .${HP_CLASS} {
+    .${HP_CLASS}, [data-hp-disabled="true"] {
       opacity: 0.35 !important;
       filter: grayscale(100%) !important;
       pointer-events: none !important;
     }
-    .${HP_CLASS} * {
+    .${HP_CLASS} *, [data-hp-disabled="true"] * {
       text-decoration: line-through !important;
     }
     #${HP_SPINNER_ID} {
@@ -72,7 +72,8 @@ class Vendor {
   ) {
     switch (name) {
       case Vendors.LeBonCoin:
-        this.parentClasses = ["mb-lg"];
+        this.parentClasses = ["li"]; // Target the overarching list item card
+        this.adClasses = ['[data-test-id="adcard-title"]', "a", "article"]; // Any possible hook
         break;
       case Vendors.LaCentrale:
         this.parentClasses = [
@@ -101,23 +102,37 @@ class Vendor {
 
 function getParentCard(vendor: Vendor, element: Element): HTMLElement | null {
   if (vendor.parentClasses.length === 0) return null;
-  const selector = vendor.parentClasses.map((cls) => `.${cls}`).join(", ");
+  const selector = vendor.parentClasses
+    .map((cls) =>
+      cls.startsWith("[") || cls.includes(":")
+        ? cls
+        : cls === "li" || cls === "article"
+          ? cls
+          : `.${cls}`,
+    )
+    .join(", ");
   return element.closest(selector) as HTMLElement | null;
 }
 
 function disableElement(vendor: Vendor, element: Element) {
   if (!(element instanceof HTMLElement)) return;
   element.classList.add(HP_CLASS);
+  element.setAttribute("data-hp-disabled", "true");
   const parent = getParentCard(vendor, element);
   if (parent) {
     parent.classList.add(HP_CLASS);
+    parent.setAttribute("data-hp-disabled", "true");
   }
 }
 
 function enableElement(vendor: Vendor, element: HTMLElement) {
   element.classList.remove(HP_CLASS);
+  element.removeAttribute("data-hp-disabled");
   const parent = getParentCard(vendor, element);
-  if (parent) parent.classList.remove(HP_CLASS);
+  if (parent) {
+    parent.classList.remove(HP_CLASS);
+    parent.removeAttribute("data-hp-disabled");
+  }
 }
 
 let activeJobToken = 0;
@@ -139,24 +154,62 @@ export async function toggleAd(hide: boolean, activeMotors: Motor[]) {
   const adSelector =
     vendor.adClasses.length > 0
       ? vendor.adClasses
-          .map((cls) => (cls.startsWith("[") ? cls : `.${cls}`))
+          .map((cls) =>
+            cls.startsWith("[") ||
+            cls.includes(":") ||
+            cls === "article" ||
+            cls === "a"
+              ? cls
+              : `.${cls}`,
+          )
           .join(", ")
       : "a";
 
   const elements = Array.from(document.querySelectorAll(adSelector));
 
+  const parentsToProcess = new Set<HTMLElement>();
+  elements.forEach((el) => {
+    const parent = getParentCard(vendor, el);
+    if (parent) {
+      parentsToProcess.add(parent);
+    }
+  });
+
+  const parentsArray = Array.from(parentsToProcess);
+
   const batchSize = 50;
-  for (let i = 0; i < elements.length; i += batchSize) {
-    // Check if a newer job has started
+  for (let i = 0; i < parentsArray.length; i += batchSize) {
     if (token !== activeJobToken) return;
 
-    const batch = elements.slice(i, i + batchSize);
-    batch.forEach((element) => {
-      const text = element.textContent || "";
-      if (hide && text && matches(text)) {
-        disableElement(vendor, element);
+    const batch = parentsArray.slice(i, i + batchSize);
+    batch.forEach((parent) => {
+      let fullText =
+        (parent.textContent || "") +
+        " " +
+        (parent.getAttribute("aria-label") || "") +
+        " " +
+        (parent.getAttribute("title") || "") +
+        " " +
+        (parent.getAttribute("alt") || "");
+
+      const elementsWithAttrs = parent.querySelectorAll(
+        "[aria-label], [title], [alt]",
+      );
+      elementsWithAttrs.forEach((el) => {
+        fullText +=
+          " " +
+          (el.getAttribute("aria-label") || "") +
+          " " +
+          (el.getAttribute("title") || "") +
+          " " +
+          (el.getAttribute("alt") || "");
+      });
+
+      const isMatch = hide && fullText && matches(fullText);
+      if (isMatch) {
+        disableElement(vendor, parent);
       } else {
-        enableElement(vendor, element as HTMLElement);
+        enableElement(vendor, parent);
       }
     });
 

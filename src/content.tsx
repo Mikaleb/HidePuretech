@@ -34,7 +34,18 @@ let observer: MutationObserver | null = null;
 function setupObserver() {
   if (observer) observer.disconnect();
   observer = new MutationObserver(debouncedToggle);
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: [
+      "class", 
+      "data-hp-disabled", 
+      "aria-label", 
+      "title", 
+      "alt"
+    ],
+  });
 }
 
 browser.runtime.onMessage.addListener(

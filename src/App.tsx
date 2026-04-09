@@ -162,7 +162,7 @@ class App extends Component<{}, AppState> {
             style={{ padding: "0.8em 1em" }}
             className="info"
           >
-            Motors
+            {browser.i18n.getMessage("motors")}
           </Typography>
 
           {this.state.motors.map((motor) => (
