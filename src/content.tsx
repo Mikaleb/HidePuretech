@@ -54,7 +54,7 @@ browser.runtime.onMessage.addListener(
   (
     message: Partial<AppState>,
     _sender: any,
-    sendResponse: (arg0: { status: string }) => void
+    sendResponse: (arg0: { status: string; count?: number }) => void
   ) => {
     if (message.websites) {
       // If it's a full list, replace. If it's a partial list (one site), we might want to merge,
@@ -70,6 +70,12 @@ browser.runtime.onMessage.addListener(
     if (message.motors) currentMotors = message.motors;
     if (message.hideCompletely !== undefined) hideCompletely = message.hideCompletely;
     if (message.showPlaceholderIcon !== undefined) showPlaceholderIcon = message.showPlaceholderIcon;
+
+    if ((message as any).action === "getHiddenCount") {
+      const count = document.querySelectorAll('[data-hp-disabled="true"]').length;
+      sendResponse({ status: "received", count });
+      return;
+    }
 
     runToggle();
     sendResponse({ status: "received" });

@@ -3,4 +3,5 @@ export enum Vendors {
   AutoSphere = "AutoSphere",
   LaCentrale = "LaCentrale",
   AramisAuto = "AramisAuto",
+  AutoScout24 = "AutoScout24",
 }

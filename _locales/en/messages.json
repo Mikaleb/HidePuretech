@@ -3,7 +3,7 @@
   "brand": { "message": "Hide Puretech" },
   "extensionName": { "message": "Hide Puretech" },
   "extensionDescription": {
-    "message": "Hide Puretech motors from car listing on La Centrale, AramisAuto, Autosphere and LeBonCoin"
+    "message": "Hide problematic motors (PureTech, THP, BlueHDi) from car listings on La Centrale, AramisAuto, Autosphere, AutoScout24 and LeBonCoin"
   },
   "settings": { "message": "Settings" },
   "instructions": {
@@ -12,5 +12,6 @@
   "motors": { "message": "Motors" },
   "support": { "message": "Support" },
   "hideCompletely": { "message": "Hide completely" },
-  "showPlaceholderIcon": { "message": "Show icon next to ads" }
+  "showPlaceholderIcon": { "message": "Show icon next to ads" },
+  "adsHiddenOnThisPage": { "message": "unreliable ads hidden on this page" }
 }

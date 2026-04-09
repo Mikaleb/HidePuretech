@@ -26,7 +26,8 @@
         "https://*.lacentrale.fr/*",
         "https://*.aramisauto.com/*",
         "https://*.leboncoin.fr/*",
-        "https://*.autosphere.fr/*"
+        "https://*.autosphere.fr/*",
+        "https://*.autoscout24.fr/*"
       ]
     }
   ],

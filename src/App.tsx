@@ -37,6 +37,25 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.getStateFromKey("showPlaceholderIcon");
   }
 
+  componentDidMount() {
+    this.refreshHiddenCount();
+  }
+
+  refreshHiddenCount = async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab?.id) {
+      try {
+        const response = await browser.tabs.sendMessage(tab.id, { action: "getHiddenCount" });
+        if (response && response.count !== undefined) {
+          this.setState({ currentTabHiddenCount: response.count });
+        }
+      } catch (e) {
+        // Content script might not be injected or site not supported
+        console.log("Could not get hidden count", e);
+      }
+    }
+  };
+
   toggleHideCompletely = () => {
     this.setState((prevState) => {
       const hideCompletely = !prevState.hideCompletely;
@@ -166,6 +185,25 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
           >
             Hide Puretech
           </Typography>
+          {this.state.currentTabHiddenCount !== undefined && this.state.currentTabHiddenCount > 0 && (
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                bgcolor: "error.main",
+                color: "white",
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 10,
+                mt: 1,
+                boxShadow: "0 4px 12px rgba(211, 47, 47, 0.4)",
+              }}
+            >
+              <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                {this.state.currentTabHiddenCount} {browser.i18n.getMessage("adsHiddenOnThisPage")}
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ px: 2, pb: 1 }}>

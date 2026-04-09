@@ -34,6 +34,11 @@ export class Vendor {
         this.parentClasses = ["vehicle-card"];
         this.titleSelector = ".vehicle-card__title, h3";
         break;
+      case Vendors.AutoScout24:
+        this.parentClasses = ["article.list-item", ".list-item", "article"];
+        this.adClasses = ["article", "a"];
+        this.titleSelector = "h2";
+        break;
       default:
         this.parentClasses = [];
         this.adClasses = [];
@@ -47,6 +52,7 @@ export function getVendorFromUrl(url: string): Vendor {
   if (url.includes("aramisauto")) return new Vendor(Vendors.AramisAuto);
   if (url.includes("leboncoin")) return new Vendor(Vendors.LeBonCoin);
   if (url.includes("autosphere")) return new Vendor(Vendors.AutoSphere);
+  if (url.includes("autoscout24")) return new Vendor(Vendors.AutoScout24);
   return new Vendor(Vendors.LaCentrale);
 }
 
