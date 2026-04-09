@@ -34,6 +34,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.getStateFromKey("newMotor");
     this.getStateFromKey("motors");
     this.getStateFromKey("hideCompletely");
+    this.getStateFromKey("showPlaceholderIcon");
   }
 
   toggleHideCompletely = () => {
@@ -42,6 +43,15 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
       chrome.storage.sync.set({ hideCompletely });
       this.sendMessageToContentScript({ hideCompletely });
       return { hideCompletely } as AppState & { customMotorInput: string };
+    });
+  };
+  
+  toggleShowPlaceholderIcon = () => {
+    this.setState((prevState) => {
+      const showPlaceholderIcon = !prevState.showPlaceholderIcon;
+      chrome.storage.sync.set({ showPlaceholderIcon });
+      this.sendMessageToContentScript({ showPlaceholderIcon });
+      return { showPlaceholderIcon } as AppState & { customMotorInput: string };
     });
   };
 
@@ -164,6 +174,31 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
               size="small"
               checked={this.state.hideCompletely}
               onChange={this.toggleHideCompletely}
+            />
+          </Paper>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 1.5, 
+              mt: 1,
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 2, 
+              border: '1px solid', 
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+            }}
+          >
+            <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <img src="public/icon16.png" style={{ width: 14, height: 14, opacity: 0.7 }} alt="" />
+            </Box>
+            <Typography variant="body2" sx={{ flexGrow: 1, fontWeight: 500 }}>
+              {browser.i18n.getMessage("showPlaceholderIcon")}
+            </Typography>
+            <Switch
+              size="small"
+              checked={this.state.showPlaceholderIcon}
+              onChange={this.toggleShowPlaceholderIcon}
             />
           </Paper>
         </Box>

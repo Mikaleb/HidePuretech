@@ -35,5 +35,19 @@
       "id": "hide-puretech@mikaleb.org",
       "strict_min_version": "109.0"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "public/icon16.png",
+        "public/icon32.png",
+        "public/icon48.png",
+        "public/icon128.png",
+        "icon16.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
 }

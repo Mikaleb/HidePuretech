@@ -16,7 +16,7 @@ function injectStyle(hideCompletely: boolean) {
   }
   const style = document.createElement("style");
   style.id = "hp-style";
-  
+
   // Grey-out style should ALWAYS be available if disabled
   style.textContent = `
     .${HP_CLASS}, [data-hp-disabled="true"] {
@@ -103,13 +103,26 @@ function injectStyle(hideCompletely: boolean) {
       text-transform: uppercase !important;
       letter-spacing: 0.5px !important;
     }
-    /* Show on hover of any parent with revealed status */
-    [data-hp-user-show="true"]:hover {
+    /* Revealed state aesthetic */
+    [data-hp-user-show="true"] {
       position: relative !important;
+      opacity: 0.8 !important;
+      filter: grayscale(30%) !important;
+      background: rgba(242, 69, 53, 0.04) !important;
+      border: 2px dashed rgba(242, 69, 53, 0.3) !important;
+      border-radius: 12px !important;
+      pointer-events: auto !important;
+      transition: all 0.3s ease !important;
+    }
+    [data-hp-user-show="true"] * {
+      text-decoration: none !important; /* Remove line-through once revealed */
+    }
+    [data-hp-user-show="true"] .${HP_REHIDE_BTN_CLASS} {
+      opacity: 0.7 !important;
+      pointer-events: auto !important;
     }
     [data-hp-user-show="true"]:hover .${HP_REHIDE_BTN_CLASS} {
       opacity: 1 !important;
-      pointer-events: auto !important;
     }
     .${HP_REHIDE_BTN_CLASS}:hover {
       background: #d43224 !important;
@@ -187,7 +200,8 @@ class Vendor {
           "lien-fiche",
           "link_veh",
         ];
-        this.titleSelector = 'h2[class*="title"], h2[class*="vehiclecardV2_title"], h3[class*="title"], [class*="searchCard__title"]';
+        this.titleSelector =
+          'h2[class*="title"], h2[class*="vehiclecardV2_title"], h3[class*="title"], [class*="searchCard__title"]';
         break;
       case Vendors.AutoSphere:
         this.parentClasses = ["thumbnail_vehicle", "fiche-synth"];
@@ -219,20 +233,39 @@ function getParentCard(vendor: Vendor, element: Element): HTMLElement | null {
   return element.closest(selector) as HTMLElement | null;
 }
 
-function disableElement(vendor: Vendor, element: HTMLElement, hideCompletely: boolean) {
+function disableElement(
+  vendor: Vendor,
+  element: HTMLElement,
+  hideCompletely: boolean,
+  showPlaceholderIcon: boolean,
+) {
   const parent = getParentCard(vendor, element) || element;
-  
+
+  // If we are NOT in hideCompletely mode anymore, ensure any leftover placeholders are removed
+  if (!hideCompletely) {
+    if (
+      parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)
+    ) {
+      parent.previousElementSibling.remove();
+    }
+    // Also remove re-hide button if switching back to grey-out mode
+    const rehideBtn = parent.querySelector(`.${HP_REHIDE_BTN_CLASS}`);
+    if (rehideBtn) rehideBtn.remove();
+  }
+
   // ADD THIS FIX: Check if the user has already expanded this ad
   if (parent.getAttribute("data-hp-user-show") === "true") {
     parent.classList.add(HP_CLASS); // Still keep it greyed out
     parent.classList.remove(HP_HIDE_CLASS); // Remove hiding
     parent.setAttribute("data-hp-disabled", "true");
-    
+
     // Ensure placeholder is gone if it somehow stayed
-    if (parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)) {
+    if (
+      parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)
+    ) {
       parent.previousElementSibling.remove();
     }
-    
+
     // Inject "Re-hide" button if not present
     if (!parent.querySelector(`.${HP_REHIDE_BTN_CLASS}`)) {
       const rehideBtn = document.createElement("button");
@@ -244,7 +277,7 @@ function disableElement(vendor: Vendor, element: HTMLElement, hideCompletely: bo
         parent.removeAttribute("data-hp-user-show");
         parent.classList.add(HP_HIDE_CLASS);
         // Force a re-run of disable logic to recreate placeholder
-        disableElement(vendor, element, hideCompletely);
+        disableElement(vendor, element, hideCompletely, showPlaceholderIcon);
       };
       parent.appendChild(rehideBtn);
     }
@@ -253,50 +286,54 @@ function disableElement(vendor: Vendor, element: HTMLElement, hideCompletely: bo
 
   element.classList.add(HP_CLASS);
   element.setAttribute("data-hp-disabled", "true");
-  
+
   parent.classList.add(HP_CLASS);
   parent.setAttribute("data-hp-disabled", "true");
 
   if (hideCompletely) {
     parent.classList.add(HP_HIDE_CLASS);
-    
+
     // Create placeholder if it doesn't exist
-    if (!parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)) {
+    if (
+      !parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)
+    ) {
       const placeholder = document.createElement("div");
       placeholder.className = HP_PLACEHOLDER_CLASS;
-      
-      const iconUrl = typeof chrome !== 'undefined' && chrome.runtime 
-        ? chrome.runtime.getURL("public/icon16.png") 
-        : "";
-        
+
+      const iconUrl =
+        typeof chrome !== "undefined" && chrome.runtime
+          ? chrome.runtime.getURL("public/icon16.png")
+          : "";
+
       // VEHICLE TITLE EXTRACTION
       let adTitle = "Vehicle";
       if (vendor.titleSelector) {
         const titleEl = parent.querySelector(vendor.titleSelector);
         if (titleEl && titleEl.textContent) {
-          adTitle = titleEl.textContent.trim().split('\n')[0]; // Get first line of title
+          adTitle = titleEl.textContent.trim().split("\n")[0]; // Get first line of title
         }
       }
-      
-      const motorName = parent.getAttribute('data-hp-motor') || '';
-      const displayTitle = adTitle !== "Vehicle" 
-        ? `${adTitle}${motorName ? ` (${motorName})` : ''}`
-        : `${motorName || 'Ad'} hidden`;
+
+      const motorName = parent.getAttribute("data-hp-motor") || "";
+      const displayTitle =
+        adTitle !== "Vehicle"
+          ? `${adTitle}${motorName ? ` (${motorName})` : ""}`
+          : `${motorName || "Ad"} hidden`;
 
       placeholder.innerHTML = `
-        <img src="${iconUrl}" alt="icon">
+        ${showPlaceholderIcon ? `<img src="${iconUrl}" alt="icon">` : ""}
         <span>${displayTitle}</span>
         <div class="hp-placeholder-line"></div>
         <div class="hp-placeholder-btn">Show</div>
       `;
-      
+
       placeholder.onclick = (e) => {
         e.stopPropagation();
         parent.setAttribute("data-hp-user-show", "true");
         parent.classList.remove(HP_HIDE_CLASS);
         placeholder.remove();
       };
-      
+
       parent.parentNode?.insertBefore(placeholder, parent);
     }
   }
@@ -306,18 +343,18 @@ function enableElement(vendor: Vendor, element: HTMLElement) {
   element.classList.remove(HP_CLASS);
   element.removeAttribute("data-hp-disabled");
   element.removeAttribute("data-hp-user-show");
-  
+
   const parent = getParentCard(vendor, element) || element;
   parent.classList.remove(HP_CLASS);
   parent.classList.remove(HP_HIDE_CLASS);
   parent.removeAttribute("data-hp-disabled");
   parent.removeAttribute("data-hp-user-show");
-  
+
   // Remove placeholder if it exists
   if (parent.previousElementSibling?.classList.contains(HP_PLACEHOLDER_CLASS)) {
     parent.previousElementSibling.remove();
   }
-  
+
   // Remove "Re-hide" button if it exists
   const rehideBtn = parent.querySelector(`.${HP_REHIDE_BTN_CLASS}`);
   if (rehideBtn) {
@@ -326,15 +363,35 @@ function enableElement(vendor: Vendor, element: HTMLElement) {
 }
 
 let activeJobToken = 0;
+let lastHideCompletely: boolean | null = null;
+let lastShowPlaceholderIcon: boolean | null = null;
+
 
 /**
  * Toggle visibility of car ads matching any active motor pattern.
  * Processes elements in batches to avoid blocking the main thread.
  */
-export async function toggleAd(hide: boolean, activeMotors: Motor[], hideCompletely: boolean) {
+export async function toggleAd(
+  hide: boolean,
+  activeMotors: Motor[],
+  hideCompletely: boolean,
+  showPlaceholderIcon: boolean,
+) {
   const token = ++activeJobToken;
   injectStyle(hideCompletely);
   showSpinner();
+
+  // If the hiding mode or icon preference changed, clear all existing placeholders
+  if ((lastHideCompletely !== null && lastHideCompletely !== hideCompletely) || 
+      (lastShowPlaceholderIcon !== null && lastShowPlaceholderIcon !== showPlaceholderIcon)) {
+    document.querySelectorAll(`.${HP_PLACEHOLDER_CLASS}`).forEach((p) => p.remove());
+    // Also clear user-show attributes if we are switching modes to ensure a clean state
+    if (lastHideCompletely !== hideCompletely) {
+       document.querySelectorAll("[data-hp-user-show]").forEach(el => el.removeAttribute("data-hp-user-show"));
+    }
+  }
+  lastHideCompletely = hideCompletely;
+  lastShowPlaceholderIcon = showPlaceholderIcon;
 
   const regexes = activeMotors.map((m) => new RegExp(m.pattern, "i"));
   const matches = (text: string) => regexes.some((r) => r.test(text));
@@ -398,11 +455,13 @@ export async function toggleAd(hide: boolean, activeMotors: Motor[], hideComplet
       const isMatch = hide && fullText && matches(fullText);
       if (isMatch) {
         // Find which motor matched for the placeholder label
-        const matchedMotor = activeMotors.find(m => new RegExp(m.pattern, "i").test(fullText));
+        const matchedMotor = activeMotors.find((m) =>
+          new RegExp(m.pattern, "i").test(fullText),
+        );
         if (matchedMotor) {
-          parent.setAttribute('data-hp-motor', matchedMotor.title);
+          parent.setAttribute("data-hp-motor", matchedMotor.title);
         }
-        disableElement(vendor, parent, hideCompletely);
+        disableElement(vendor, parent, hideCompletely, showPlaceholderIcon);
       } else {
         enableElement(vendor, parent);
       }

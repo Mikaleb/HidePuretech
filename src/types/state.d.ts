@@ -20,4 +20,5 @@ export type AppState = {
     active: boolean;
   }[];
   hideCompletely: boolean;
+  showPlaceholderIcon: boolean;
 };
