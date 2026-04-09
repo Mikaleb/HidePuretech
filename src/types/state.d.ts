@@ -2,6 +2,7 @@ export type Motor = {
   title: string;
   active: boolean;
   pattern: string;
+  isCustom?: boolean;
 };
 
 export type AppState = {

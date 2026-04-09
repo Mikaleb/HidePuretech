@@ -12,6 +12,10 @@ import Container from "@mui/material/Container";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { AppState } from "./types/state";
 import FooterApp from "./FooterApp";
@@ -19,11 +23,14 @@ import { initialState } from "./store/initialState";
 
 declare const browser: any;
 
-class App extends Component<{}, AppState> {
+class App extends Component<{}, AppState & { customMotorInput: string }> {
   constructor(props: {}) {
     super(props);
 
-    this.state = initialState;
+    this.state = {
+      ...initialState,
+      customMotorInput: "",
+    };
 
     this.getStateFromKey("loading");
     this.getStateFromKey("websites");
@@ -71,7 +78,37 @@ class App extends Component<{}, AppState> {
       );
       chrome.storage.sync.set({ motors });
       this.sendMessageToContentScript({ motors, websites: prevState.websites });
-      return { motors };
+      return { motors } as AppState & { customMotorInput: string };
+    });
+  };
+
+  handleRemoveMotor = (motorTitle: string) => {
+    this.setState((prevState) => {
+      const motors = prevState.motors.filter((m) => m.title !== motorTitle);
+      chrome.storage.sync.set({ motors });
+      this.sendMessageToContentScript({ motors, websites: prevState.websites });
+      return { motors } as AppState & { customMotorInput: string };
+    });
+  };
+
+  handleAddMotor = () => {
+    const title = this.state.customMotorInput.trim();
+    if (!title) return;
+    
+    this.setState((prevState) => {
+      if (prevState.motors.some(m => m.title.toLowerCase() === title.toLowerCase())) {
+        return { customMotorInput: "" } as AppState & { customMotorInput: string };
+      }
+      const newMotor = {
+        title,
+        active: true,
+        pattern: title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'),
+        isCustom: true,
+      };
+      const motors = [...prevState.motors, newMotor];
+      chrome.storage.sync.set({ motors });
+      this.sendMessageToContentScript({ motors, websites: prevState.websites });
+      return { motors, customMotorInput: "" } as AppState & { customMotorInput: string };
     });
   };
 
@@ -166,7 +203,7 @@ class App extends Component<{}, AppState> {
           </Typography>
 
           {this.state.motors.map((motor) => (
-            <Container key={motor.title}>
+            <Container key={motor.title} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 0 }}>
               <FormGroup>
                 <FormControlLabel
                   label={motor.title}
@@ -184,8 +221,39 @@ class App extends Component<{}, AppState> {
                   }
                 />
               </FormGroup>
+              {motor.isCustom && (
+                <IconButton 
+                  size="small" 
+                  onClick={() => this.handleRemoveMotor(motor.title)}
+                  aria-label="delete"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              )}
             </Container>
           ))}
+
+          <Box style={{ display: 'flex', gap: '8px', marginTop: '16px', marginBottom: '16px', alignItems: 'center', padding: '0 16px', width: '100%' }}>
+            <TextField
+              size="small"
+              variant="outlined"
+              placeholder={browser.i18n.getMessage("add") || "Add"}
+              value={this.state.customMotorInput || ""}
+              onChange={(e) => this.setState({ customMotorInput: e.target.value })}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') this.handleAddMotor();
+              }}
+              style={{ flexGrow: 1 }}
+            />
+            <Button 
+              variant="contained" 
+              onClick={this.handleAddMotor}
+              disabled={!this.state.customMotorInput?.trim()}
+              style={{ minWidth: '40px', padding: '6px 12px' }}
+            >
+              +
+            </Button>
+          </Box>
         </Container>
 
         <FooterApp />
