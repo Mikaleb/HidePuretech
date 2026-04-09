@@ -5,7 +5,7 @@
   "extensionDescription": { "message": "Hide Puretech motors from car listing on La Centrale, AramisAuto, Autosphere and LeBonCoin" },
   "settings": { "message": "Settings" },
   "instructions": {
-    "message": "Toggle each option for each site :"
+    "message": "Enable on these websites"
   },
   "motors": { "message": "Motors" },
   "support": { "message": "Support" }

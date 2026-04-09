@@ -1,12 +1,17 @@
+import { useState } from "react";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import TuneIcon from "@mui/icons-material/Tune";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import { AppState } from "../types/state";
 
@@ -31,94 +36,109 @@ export const MotorList = ({
   onAdd,
   onInputChange,
 }: Props) => {
+  const [expanded, setExpanded] = useState(true);
+
   return (
-    <Container
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-      maxWidth="xs"
-    >
-      <Typography
-        align="left"
-        variant="subtitle2"
-        style={{ padding: "0.8em 1em" }}
-        className="info"
-      >
-        {browser.i18n.getMessage("motors")}
-      </Typography>
-
-      {motors.map((motor) => (
-        <Container
-          key={motor.title}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: 0,
+    <Box sx={{ p: 2, pt: 1 }}>
+      <Paper elevation={0} sx={{ overflow: "hidden", border: '1px solid', borderColor: 'divider' }}>
+        <Box 
+          onClick={() => setExpanded(!expanded)}
+          sx={{ 
+            px: 2, 
+            py: 1, 
+            display: "flex", 
+            alignItems: "center", 
+            gap: 1, 
+            borderBottom: expanded ? "1px solid" : "0", 
+            borderColor: "divider", 
+            bgcolor: 'action.hover',
+            cursor: 'pointer',
+            transition: 'border-bottom 0.2s',
+            '&:hover': {
+              bgcolor: 'action.selected'
+            }
           }}
         >
-          <FormGroup>
-            <FormControlLabel
-              label={motor.title}
-              control={
+          <TuneIcon color="primary" fontSize="small" />
+          <Typography variant="subtitle2" sx={{ m: 0, flexGrow: 1 }}>
+            {browser.i18n.getMessage("motors")}
+          </Typography>
+          <IconButton 
+            size="small" 
+            sx={{ 
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.3s'
+            }}
+          >
+            <ExpandMoreIcon fontSize="small" />
+          </IconButton>
+        </Box>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <List disablePadding>
+            {motors.map((motor) => (
+              <ListItem 
+                key={motor.title}
+                sx={{ py: 1, px: 2, borderBottom: "1px solid", borderColor: "divider" }}
+                secondaryAction={
+                  motor.isCustom && (
+                    <IconButton 
+                      edge="end" 
+                      size="small" 
+                      onClick={() => onRemove(motor.title)}
+                      aria-label="delete"
+                      color="error"
+                      sx={{ ml: 1, opacity: 0.8 }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  )
+                }
+              >
+                <ListItemText primary={motor.title} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} />
                 <Switch
-                  value={motor.active ? "on" : "off"}
+                  edge={motor.isCustom ? undefined : "end"}
                   checked={motor.active}
-                  disabled={loading !== false}
-                  onChange={() => {
-                    if (loading === false) {
-                      onToggle(motor);
-                    }
-                  }}
+                  disabled={loading}
+                  onChange={() => !loading && onToggle(motor)}
                 />
-              }
-            />
-          </FormGroup>
-          {motor.isCustom && (
-            <IconButton
+              </ListItem>
+            ))}
+          </List>
+          <Box sx={{ p: 1.5, display: "flex", gap: 1, bgcolor: 'background.default' }}>
+            <TextField
               size="small"
-              onClick={() => onRemove(motor.title)}
-              aria-label="delete"
+              variant="outlined"
+              placeholder={browser.i18n.getMessage("add") || "Add"}
+              value={customMotorInput || ""}
+              onChange={(e) => onInputChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onAdd();
+              }}
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  bgcolor: "background.paper",
+                  borderRadius: 2
+                }
+              }}
+            />
+            <IconButton 
+              color="primary" 
+              onClick={onAdd}
+              disabled={!customMotorInput?.trim()}
+              sx={{ 
+                bgcolor: 'primary.main', 
+                color: 'primary.contrastText',
+                borderRadius: 2,
+                '&:hover': { bgcolor: 'primary.dark' },
+                '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' }
+              }}
             >
-              <DeleteIcon fontSize="small" />
+              <AddIcon />
             </IconButton>
-          )}
-        </Container>
-      ))}
-
-      <Box
-        style={{
-          display: "flex",
-          gap: "8px",
-          marginTop: "16px",
-          marginBottom: "16px",
-          alignItems: "center",
-          padding: "0 16px",
-          width: "100%",
-        }}
-      >
-        <TextField
-          size="small"
-          variant="outlined"
-          placeholder={browser.i18n.getMessage("add") || "Add"}
-          value={customMotorInput || ""}
-          onChange={(e) => onInputChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onAdd();
-          }}
-          style={{ flexGrow: 1 }}
-        />
-        <Button
-          variant="contained"
-          onClick={onAdd}
-          disabled={!customMotorInput?.trim()}
-          style={{ minWidth: "40px", padding: "6px 12px" }}
-        >
-          +
-        </Button>
-      </Box>
-    </Container>
+          </Box>
+        </Collapse>
+      </Paper>
+    </Box>
   );
 };

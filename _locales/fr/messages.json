@@ -5,7 +5,7 @@
   "extensionDescription": { "message": "Masquer les moteurs Puretech des annonces automobiles sur La Centrale, AramisAuto, Autosphere et LeBonCoin" },
   "settings": { "message": "Paramètres" },
   "instructions": {
-    "message": "Activer ou désactiver chaque option pour chaque site :"
+    "message": "Activer sur ces sites"
   },
   "motors": { "message": "Moteurs" },
   "support": { "message": "Nous soutenir" }

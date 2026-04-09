@@ -9,11 +9,12 @@ declare const browser: any;
 export default function SimpleBottomNavigation() {
   return (
     <Box
-      style={{
-        backgroundColor: "#f5f5f5",
+      sx={{
+        bgcolor: 'action.hover',
         fontSize: "0.8em",
         padding: "0.5em 1em",
-        alignContent: "center",
+        borderTop: "1px solid",
+        borderColor: "divider"
       }}
     >
       <Stack
@@ -32,16 +33,16 @@ export default function SimpleBottomNavigation() {
             href="https://ko-fi.com/mikaleb"
             target="_blank"
             rel="noopener"
+            sx={{ textTransform: 'none', fontWeight: 600 }}
           >
             <FavoriteBorderIcon
               fontSize="small"
-              // sx={{ color: iconColor }}
               style={{ marginRight: "0.3em" }}
             />
             {browser.i18n.getMessage("support")}
           </Button>
 
-          <Typography sx={{ color: "grey.500", fontSize: 13, opacity: "70%" }}>
+          <Typography sx={{ color: "text.disabled", fontSize: 13, opacity: 0.7 }}>
             &bull;
           </Typography>
 
@@ -52,6 +53,7 @@ export default function SimpleBottomNavigation() {
             aria-label="github"
             title="GitHub"
             size="small"
+            sx={{ color: 'text.secondary' }}
           >
             <GitHubIcon fontSize="small" />
           </IconButton>

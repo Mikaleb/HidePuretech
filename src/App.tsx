@@ -118,28 +118,16 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
 
   render() {
     return (
-      <div>
-        <Box
-          style={{
-            padding: "0.5rem",
-          }}
-        >
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
+        <Box sx={{ px: 2, pt: 3, pb: 1, textAlign: 'center' }}>
           <Typography
             variant="h5"
-            align="center"
-            style={{
-              padding: "0.3em 1em",
-            }}
             className="title"
+            color="text.primary"
+            sx={{ fontWeight: "bold", mb: 0 }}
           >
             {browser.i18n.getMessage("brand")}
           </Typography>
-
-          <WebsiteList
-            websites={this.state.websites}
-            loading={this.state.loading}
-            onToggle={this.toggleWebsiteStatus}
-          />
         </Box>
 
         <MotorList
@@ -152,8 +140,16 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
           onInputChange={(val) => this.setState({ customMotorInput: val })}
         />
 
-        <FooterApp />
-      </div>
+        <WebsiteList
+          websites={this.state.websites}
+          loading={this.state.loading}
+          onToggle={this.toggleWebsiteStatus}
+        />
+
+        <Box sx={{ mt: 'auto' }}>
+          <FooterApp />
+        </Box>
+      </Box>
     );
   }
 }
