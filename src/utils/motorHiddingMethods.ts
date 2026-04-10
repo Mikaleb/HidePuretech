@@ -101,12 +101,22 @@ function disableElement(
           ? `${adTitle}${motorName ? ` (${motorName})` : ""}`
           : `${motorName || "Ad"} hidden`;
 
-      placeholder.innerHTML = `
-        ${showPlaceholderIcon ? `<img src="${iconUrl}" alt="icon">` : ""}
-        <span>${displayTitle}</span>
-        <div class="lcm-placeholder-line"></div>
-        <div class="lcm-placeholder-btn">Show</div>
-      `;
+      if (showPlaceholderIcon && iconUrl) {
+        const img = document.createElement("img");
+        img.src = iconUrl;
+        img.alt = "icon";
+        placeholder.appendChild(img);
+      }
+      const span = document.createElement("span");
+      span.textContent = displayTitle;
+      placeholder.appendChild(span);
+      const line = document.createElement("div");
+      line.className = "lcm-placeholder-line";
+      placeholder.appendChild(line);
+      const btn = document.createElement("div");
+      btn.className = "lcm-placeholder-btn";
+      btn.textContent = "Show";
+      placeholder.appendChild(btn);
 
       placeholder.onclick = (e) => {
         e.stopPropagation();
