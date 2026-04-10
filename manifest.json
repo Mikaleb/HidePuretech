@@ -35,6 +35,10 @@
       ]
     }
   ],
+  "data_collection_permissions": {
+    "required": [],
+    "optional": []
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "le-cache-misere@mikaleb.org",
