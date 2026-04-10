@@ -18,7 +18,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "zip": "cd dist && zip -r ../le-cache-misere.zip . -x '*.git*' && cd ..",
+    "zip": "rm -f ../le-cache-misere.zip && cd dist && zip -r ../le-cache-misere.zip . -x '*.git*' && cd ..",
     "deploy": "npm run build && npm run zip",
     "release": "release-it"
   },
