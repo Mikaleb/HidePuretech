@@ -11,6 +11,7 @@ let currentMotors = initialState.motors;
 let hideCompletely = initialState.hideCompletely;
 let showPlaceholderIcon = initialState.showPlaceholderIcon;
 let showBadgeCount = initialState.showBadgeCount;
+let hasConsented = initialState.hasConsented;
 
 function findUrlSettings(websites: any, url: string): any {
   const convertWildcardToRegex = (pattern: string) =>
@@ -21,6 +22,7 @@ function findUrlSettings(websites: any, url: string): any {
 }
 
 const runToggle = async () => {
+  if (!hasConsented) return;
   const matchedWebsite = findUrlSettings(currentWebsites, url);
   if (!matchedWebsite) return;
 
@@ -75,6 +77,7 @@ browser.runtime.onMessage.addListener(
     if (message.hideCompletely !== undefined) hideCompletely = message.hideCompletely;
     if (message.showPlaceholderIcon !== undefined) showPlaceholderIcon = message.showPlaceholderIcon;
     if (message.showBadgeCount !== undefined) showBadgeCount = message.showBadgeCount;
+    if (message.hasConsented !== undefined) hasConsented = message.hasConsented;
 
     if ((message as any).action === "getHiddenCount") {
       const count = document.querySelectorAll('[data-lcm-disabled="true"]').length;
@@ -95,6 +98,11 @@ browser.storage.onChanged.addListener((changes: any, area: string) => {
     if (changes.hideCompletely) hideCompletely = changes.hideCompletely.newValue;
     if (changes.showPlaceholderIcon) showPlaceholderIcon = changes.showPlaceholderIcon.newValue;
     if (changes.showBadgeCount) showBadgeCount = changes.showBadgeCount.newValue;
+    if (changes.hasConsented) {
+      hasConsented = changes.hasConsented.newValue;
+      if (hasConsented) setupObserver();
+      else if (observer) observer.disconnect();
+    }
     runToggle();
   }
 });
@@ -109,16 +117,19 @@ function debounce(func: Function, wait: number) {
 
 function main() {
   browser.storage.sync.get(
-    ["websites", "motors", "hideCompletely", "showPlaceholderIcon", "showBadgeCount"],
-    (results: { websites?: any; motors?: Motor[]; hideCompletely?: boolean; showPlaceholderIcon?: boolean; showBadgeCount?: boolean }) => {
+    ["websites", "motors", "hideCompletely", "showPlaceholderIcon", "showBadgeCount", "hasConsented"],
+    (results: { websites?: any; motors?: Motor[]; hideCompletely?: boolean; showPlaceholderIcon?: boolean; showBadgeCount?: boolean; hasConsented?: boolean }) => {
       if (results.websites) currentWebsites = results.websites;
       if (results.motors) currentMotors = results.motors;
       if (results.hideCompletely !== undefined) hideCompletely = results.hideCompletely;
       if (results.showPlaceholderIcon !== undefined) showPlaceholderIcon = results.showPlaceholderIcon;
       if (results.showBadgeCount !== undefined) showBadgeCount = results.showBadgeCount;
+      if (results.hasConsented !== undefined) hasConsented = results.hasConsented;
 
-      runToggle();
-      setupObserver();
+      if (hasConsented) {
+        runToggle();
+        setupObserver();
+      }
     }
   );
 }

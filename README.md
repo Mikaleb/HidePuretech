@@ -1,11 +1,11 @@
-<p align="center"><img src="https://github.com/Mikaleb/HidePuretech/blob/main/public/favicon-128.png?raw=true" /></p>
+<p align="center"><img src="https://github.com/Mikaleb/LeCacheMisere/blob/main/public/favicon-128.png?raw=true" /></p>
 
 # Le Cache Misère (LCM)
 
 <div style="display: inline-flex;
   flex-wrap: wrap;gap: 0.2em;">
 
-<a href="https://github.com/Mikaleb/HidePuretech"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/Mikaleb/HidePuretech?style=flat-square&logo=github&logoColor=fff"></a>
+<a href="https://github.com/Mikaleb/LeCacheMisere"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/Mikaleb/LeCacheMisere?style=flat-square&logo=github&logoColor=fff"></a>
 <a href="https://chrome.google.com/webstore/detail/le-cache-misere/jphlfplfmjdbbjnegonboddmfgdkdkgi"><img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/jphlfplfmjdbbjnegonboddmfgdkdkgi?style=flat-square&logo=googlechrome&logoColor=fff&color=%234285F4"></a>
 <a href="https://addons.mozilla.org/fr/firefox/addon/le-cache-misere/"><img alt="Mozilla Add-on Users" src="https://img.shields.io/amo/users/le-cache-misere?style=flat-square&logo=firefox&logoColor=%23FF7139&color=%23FF7139"></a>
 ![Static Badge](https://img.shields.io/badge/opera-awaiting-F78C40?style=flat-square&logo=opera&logoColor=red)
@@ -66,9 +66,9 @@ npm install
 
 ### Contexts
 
-| Context            | Entry point                | Purpose                                                                                  |
-| ------------------ | -------------------------- | ---------------------------------------------------------------------------------------- |
-| **Popup**          | `src/main.tsx` → `App.tsx` | Settings UI — reads/writes `chrome.storage.sync`, sends messages to content scripts      |
+| Context            | Entry point                | Purpose                                                                                 |
+| ------------------ | -------------------------- | --------------------------------------------------------------------------------------- |
+| **Popup**          | `src/main.tsx` → `App.tsx` | Settings UI — reads/writes `chrome.storage.sync`, sends messages to content scripts     |
 | **Content script** | `src/content.tsx`          | Runs on supported sites — applies/removes `.lcm-disabled` CSS class on matched listings |
 
 The popup communicates with live tabs via `browser.tabs.sendMessage`. The content script also reads `browser.storage.sync` directly on page load for its initial state.
@@ -157,7 +157,7 @@ chrome.storage.sync.clear();
 This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
 
 > [!IMPORTANT]
-> **Commercial use is strictly prohibited without prior written permission from the author.** 
+> **Commercial use is strictly prohibited without prior written permission from the author.**
 > This includes using this code in any project intended for commercial advantage or monetary compensation.
 
 For more details, see the [LICENSE](LICENSE) file.

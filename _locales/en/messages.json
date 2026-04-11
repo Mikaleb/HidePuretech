@@ -14,5 +14,12 @@
   "hideCompletely": { "message": "Hide completely" },
   "showPlaceholderIcon": { "message": "Show icon next to ads" },
   "adsHiddenOnThisPage": { "message": "unreliable ads hidden on this page" },
-  "showBadgeCount": { "message": "Show number on icon" }
+  "showBadgeCount": { "message": "Show number on icon" },
+  "privacyTitle": { "message": "Your Privacy Matters" },
+  "privacyDescription": { "message": "To hide unreliable car ads, this extension needs to process page content locally." },
+  "privacyPoint1": { "message": "All data stays on your computer" },
+  "privacyPoint2": { "message": "No browsing history is collected or shared" },
+  "privacyPoint3": { "message": "No personal data is sent to external servers" },
+  "acceptAndContinue": { "message": "Accept and Continue" },
+  "privacyLink": { "message": "Privacy Policy" }
 }

@@ -17,4 +17,5 @@ export const initialState = {
   hideCompletely: true,
   showPlaceholderIcon: false,
   showBadgeCount: true,
+  hasConsented: false,
 };

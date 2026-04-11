@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 
 import GitHubIcon from "@mui/icons-material/GitHub";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import AgenceVolcanLogo from "./assets/agencevolcan.png";
 
 declare const browser: any;
 
@@ -10,54 +10,85 @@ export default function SimpleBottomNavigation() {
   return (
     <Box
       sx={{
-        bgcolor: 'action.hover',
+        bgcolor: "action.hover",
         fontSize: "0.8em",
         padding: "0.5em 1em",
         borderTop: "1px solid",
-        borderColor: "divider"
+        borderColor: "divider",
       }}
     >
       <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={{ xs: 3, sm: 1 }}
-        sx={{ alignItems: "center" }}
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
       >
-        <Stack
-          direction="row"
-          spacing={1}
-          useFlexGap
-          sx={{ alignItems: "center", flexGrow: 1 }}
+        <IconButton
+          target="_blank"
+          rel="noopener"
+          href="https://github.com/Mikaleb/LeCacheMisere"
+          aria-label="github"
+          title="GitHub"
+          size="small"
+          sx={{ color: "text.secondary" }}
         >
-          <Button
-            size="small"
-            href="https://ko-fi.com/mikaleb"
-            target="_blank"
-            rel="noopener"
-            sx={{ textTransform: 'none', fontWeight: 600 }}
-          >
-            <FavoriteBorderIcon
-              fontSize="small"
-              style={{ marginRight: "0.3em" }}
-            />
-            {browser.i18n.getMessage("support")}
-          </Button>
+          <GitHubIcon fontSize="small" />
+        </IconButton>
 
-          <Typography sx={{ color: "text.disabled", fontSize: 13, opacity: 0.7 }}>
-            &bull;
-          </Typography>
+        <Typography sx={{ color: "text.disabled", fontSize: 13, opacity: 0.7 }}>
+          &bull;
+        </Typography>
 
-          <IconButton
-            target="_blank"
-            rel="noopener"
-            href="https://github.com/Mikaleb/HidePuretech"
-            aria-label="github"
-            title="GitHub"
-            size="small"
-            sx={{ color: 'text.secondary' }}
-          >
-            <GitHubIcon fontSize="small" />
-          </IconButton>
-        </Stack>
+        <Button
+          size="small"
+          href="https://github.com/Mikaleb/LeCacheMisere/blob/main/PRIVACY.md"
+          target="_blank"
+          rel="noopener"
+          sx={{
+            textTransform: "none",
+            color: "text.secondary",
+            fontWeight: 600,
+            fontSize: "11px",
+            padding: "4px 8px",
+            "&:hover": { color: "primary.main" },
+          }}
+        >
+          {browser.i18n.getMessage("privacyLink")}
+        </Button>
+
+        <Typography sx={{ color: "text.disabled", fontSize: 13, opacity: 0.5 }}>
+          &bull;
+        </Typography>
+
+        <Button
+          size="small"
+          href="https://agencevolcan.dev/"
+          target="_blank"
+          rel="noopener"
+          sx={{
+            textTransform: "none",
+            color: "text.secondary",
+            fontWeight: 600,
+            padding: "4px 8px",
+            minWidth: 0,
+            "&:hover": { color: "primary.main" },
+          }}
+        >
+          <Box
+            component="img"
+            src={AgenceVolcanLogo}
+            alt="Agence Volcan"
+            sx={{
+              height: 14,
+              filter: "grayscale(1) opacity(0.7)",
+              transition: "all 0.2s",
+              "&:hover": { filter: "none", opacity: 1 },
+            }}
+          />
+        </Button>
       </Stack>
     </Box>
   );

@@ -23,4 +23,5 @@ export type AppState = {
   showPlaceholderIcon: boolean;
   showBadgeCount: boolean;
   currentTabHiddenCount?: number;
+  hasConsented: boolean;
 };

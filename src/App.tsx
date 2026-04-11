@@ -36,6 +36,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
     this.getStateFromKey("hideCompletely");
     this.getStateFromKey("showPlaceholderIcon");
     this.getStateFromKey("showBadgeCount");
+    this.getStateFromKey("hasConsented");
   }
 
   componentDidMount() {
@@ -82,6 +83,13 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
       this.sendMessageToContentScript({ showBadgeCount });
       return { showBadgeCount } as AppState & { customMotorInput: string };
     });
+  };
+
+  handleConsent = () => {
+    const hasConsented = true;
+    chrome.storage.sync.set({ hasConsented });
+    this.setState({ hasConsented } as AppState & { customMotorInput: string });
+    this.sendMessageToContentScript({ hasConsented });
   };
 
   sendMessageToContentScript = async (newState: Partial<AppState>) => {
@@ -177,6 +185,72 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
   };
 
   render() {
+    if (this.state.hasConsented === false) {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "100vh",
+            bgcolor: "background.default",
+            p: 3,
+            textAlign: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+            {browser.i18n.getMessage("privacyTitle")}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
+            {browser.i18n.getMessage("privacyDescription")}
+          </Typography>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2,
+              mb: 4,
+              bgcolor: "action.hover",
+              border: "1px solid",
+              borderColor: "divider",
+              textAlign: "left",
+            }}
+          >
+            <Typography variant="caption" display="block" gutterBottom sx={{ fontWeight: 600 }}>
+              • {browser.i18n.getMessage("privacyPoint1")}
+            </Typography>
+            <Typography variant="caption" display="block" gutterBottom sx={{ fontWeight: 600 }}>
+              • {browser.i18n.getMessage("privacyPoint2")}
+            </Typography>
+            <Typography variant="caption" display="block" sx={{ fontWeight: 600 }}>
+              • {browser.i18n.getMessage("privacyPoint3")}
+            </Typography>
+          </Paper>
+          <Box sx={{ mt: "auto" }}>
+            <Box
+              component="button"
+              onClick={this.handleConsent}
+              sx={{
+                width: "100%",
+                py: 1.5,
+                bgcolor: "primary.main",
+                color: "white",
+                border: "none",
+                borderRadius: 1,
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+                "&:hover": { bgcolor: "primary.dark" },
+                mb: 2
+              }}
+            >
+              {browser.i18n.getMessage("acceptAndContinue")}
+            </Box>
+            <FooterApp />
+          </Box>
+        </Box>
+      );
+    }
+
     return (
       <Box
         sx={{
