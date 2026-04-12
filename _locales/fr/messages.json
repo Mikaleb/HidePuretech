@@ -15,11 +15,11 @@
   "showPlaceholderIcon": { "message": "Afficher une icône à côté des annonces" },
   "adsHiddenOnThisPage": { "message": "annonces masquées sur cette page" },
   "showBadgeCount": { "message": "Afficher le nombre sur l'icône" },
-  "privacyTitle": { "message": "Votre vie privée est importante" },
-  "privacyDescription": { "message": "Pour masquer les annonces peu fiables, cette extension doit traiter le contenu de la page localement." },
-  "privacyPoint1": { "message": "Toutes les données restent sur votre ordinateur" },
-  "privacyPoint2": { "message": "Aucun historique de navigation n'est collecté ou partagé" },
-  "privacyPoint3": { "message": "Aucune donnée personnelle n'est envoyée à des serveurs externes" },
-  "acceptAndContinue": { "message": "Accepter et continuer" },
-  "privacyLink": { "message": "Politique de confidentialité" }
+  "privacyTitle": { "message": "Transparence et Protection des données" },
+  "privacyDescription": { "message": "Pour masquer les annonces de véhicules peu fiables, cette extension doit accéder et analyser le contenu des pages que vous consultez sur les sites automobiles supportés." },
+  "privacyPoint1": { "message": "Analyse locale du texte des annonces (titres et descriptions)" },
+  "privacyPoint2": { "message": "Aucune donnée n'est collectée, stockée ou transmise à des tiers" },
+  "privacyPoint3": { "message": "Fonctionnement 100% hors-ligne (pas de serveurs distants)" },
+  "privacyLink": { "message": "Consulter la politique de confidentialité complète" },
+  "acceptAndContinue": { "message": "J'accepte et je continue" }
 }

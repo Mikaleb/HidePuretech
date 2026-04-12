@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de Confidentialité - Le Cache Misère</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #d32f2f; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        h2 { color: #555; margin-top: 2rem; }
+        .highlight {
+            background-color: #fff9c4;
+            padding: 1rem;
+            border-left: 4px solid #fbc02d;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        ul { padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        footer { margin-top: 3rem; font-size: 0.9rem; color: #777; text-align: center; }
+        a { color: #1976d2; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Politique de Confidentialité</h1>
+        <p><strong>Dernière mise à jour : 12 avril 2026</strong></p>
+
+        <div class="highlight">
+            Le Cache Misère ("LCM") ne collecte, ne stocke et ne transmet AUCUNE de vos données personnelles à des serveurs externes. Tout le traitement se fait localement sur votre ordinateur.
+        </div>
+
+        <h2>1. Accès aux données (Divulgation importante)</h2>
+        <p>Pour masquer les annonces de moteurs peu fiables, l'extension nécessite l'accès à :</p>
+        <ul>
+            <li><strong>Contenu des pages</strong> : L'extension lit le texte (titres et descriptions) des sites d'annonces automobiles supportés. C'est nécessaire pour identifier les moteurs à filtrer (ex: "Puretech", "THP").</li>
+            <li><strong>Onglets / URLs</strong> : L'extension surveille l'URL de l'onglet actif pour s'activer uniquement sur les sites compatibles.</li>
+        </ul>
+
+        <h2>2. Sites Supportés</h2>
+        <p>L'extension n'analyse les données que sur les domaines suivants :</p>
+        <ul>
+            <li>lacentrale.fr</li>
+            <li>aramisauto.com</li>
+            <li>leboncoin.fr</li>
+            <li>autosphere.fr</li>
+            <li>autoscout24.fr</li>
+        </ul>
+
+        <h2>3. Stockage</h2>
+        <ul>
+            <li><strong>Stockage Local</strong> : Vos préférences et votre statut de consentement sont stockés via l'API <code>chrome.storage.sync</code> de votre navigateur.</li>
+            <li><strong>Synchronisation</strong> : Si vous êtes connecté à votre navigateur, vos réglages peuvent être synchronisés entre vos appareils. Nous n'avons pas accès à ces données.</li>
+        </ul>
+
+        <h2>4. Partage avec des tiers</h2>
+        <p>Nous ne partageons <strong>aucune information</strong> avec des tiers. Aucune donnée n'est envoyée à des régies publicitaires ou des outils d'analyse.</p>
+
+        <h2>5. Consentement</h2>
+        <p>En acceptant dans l'extension, vous consentez au traitement local décrit ci-dessus. Vous pouvez révoquer ce consentement à tout moment en désinstallant l'extension ou en effaçant ses données.</p>
+
+        <footer>
+            Questions ? <a href="https://github.com/Mikaleb/LeCacheMisere" target="_blank">Ouvrir un ticket sur GitHub</a>
+        </footer>
+    </div>
+</body>
+</html>

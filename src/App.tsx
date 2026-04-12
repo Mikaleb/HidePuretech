@@ -201,14 +201,14 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
           <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
             {browser.i18n.getMessage("privacyTitle")}
           </Typography>
-          <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ mb: 3, color: "text.secondary", px: 1 }}>
             {browser.i18n.getMessage("privacyDescription")}
           </Typography>
           <Paper
             elevation={0}
             sx={{
               p: 2,
-              mb: 4,
+              mb: 3,
               bgcolor: "action.hover",
               border: "1px solid",
               borderColor: "divider",
@@ -225,6 +225,22 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
               • {browser.i18n.getMessage("privacyPoint3")}
             </Typography>
           </Paper>
+          
+          <Button
+            href="https://github.com/Mikaleb/LeCacheMisere/blob/main/PRIVACY.md"
+            target="_blank"
+            rel="noopener"
+            sx={{
+              mb: 4,
+              textTransform: "none",
+              textDecoration: "underline",
+              color: "primary.main",
+              fontSize: "0.85rem"
+            }}
+          >
+            {browser.i18n.getMessage("privacyLink")}
+          </Button>
+
           <Box sx={{ mt: "auto" }}>
             <Box
               component="button"
@@ -238,6 +254,7 @@ class App extends Component<{}, AppState & { customMotorInput: string }> {
                 borderRadius: 1,
                 fontWeight: "bold",
                 cursor: "pointer",
+                fontSize: "1rem",
                 transition: "background-color 0.2s",
                 "&:hover": { bgcolor: "primary.dark" },
                 mb: 2
