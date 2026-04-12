@@ -16,10 +16,16 @@
   "adsHiddenOnThisPage": { "message": "unreliable ads hidden on this page" },
   "showBadgeCount": { "message": "Show number on icon" },
   "privacyTitle": { "message": "Transparency and Data Protection" },
-  "privacyDescription": { "message": "To hide unreliable car advertisements, this extension must access and analyze the content of the pages you visit on supported car listing websites." },
-  "privacyPoint1": { "message": "Local analysis of ad text (titles and descriptions)" },
-  "privacyPoint2": { "message": "No data is collected, stored, or transmitted to third parties" },
+  "privacyDescription": {
+    "message": "To hide unreliable car advertisements, this extension must access and analyze the content of the pages you visit on supported car listing websites."
+  },
+  "privacyPoint1": {
+    "message": "Local analysis of ad text (titles and descriptions)"
+  },
+  "privacyPoint2": {
+    "message": "No data is collected, stored, or transmitted to third parties"
+  },
   "privacyPoint3": { "message": "100% offline processing (no remote servers)" },
-  "privacyLink": { "message": "Read the full Privacy Policy" },
+  "privacyLink": { "message": "Privacy Policy" },
   "acceptAndContinue": { "message": "I accept and continue" }
 }
