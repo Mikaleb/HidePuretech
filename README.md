@@ -7,7 +7,7 @@
 
 <a href="https://github.com/Mikaleb/LeCacheMisere"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/Mikaleb/LeCacheMisere?style=flat-square&logo=github&logoColor=fff"></a>
 <a href="https://chrome.google.com/webstore/detail/le-cache-misere/jphlfplfmjdbbjnegonboddmfgdkdkgi"><img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/jphlfplfmjdbbjnegonboddmfgdkdkgi?style=flat-square&logo=googlechrome&logoColor=fff&color=%234285F4"></a>
-<a href="https://addons.mozilla.org/fr/firefox/addon/le-cache-misere/"><img alt="Mozilla Add-on Users" src="https://img.shields.io/amo/users/le-cache-misere?style=flat-square&logo=firefox&logoColor=%23FF7139&color=%23FF7139"></a>
+<a href="https://addons.mozilla.org/en-US/firefox/addon/le-cache-mis%C3%A8re-lcm/"><img alt="Mozilla Add-on Users" src="https://img.shields.io/amo/users/le-cache-mis%C3%A8re-lcm?style=flat-square&logo=firefox&logoColor=%23FF7139&color=%23FF7139"></a>
 ![Static Badge](https://img.shields.io/badge/opera-awaiting-F78C40?style=flat-square&logo=opera&logoColor=red)
 
 </div>
